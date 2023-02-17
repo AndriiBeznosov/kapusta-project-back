@@ -8,24 +8,27 @@ const { JWT_SECRET } = process.env;
 
 const addUser = async (email, password) => {
   // hash паролю
-  const salt = await bcrypt.genSalt();
-  const hashedPassword = await bcrypt.hash(password, salt);
+
   try {
+    // hash паролю
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
     // створення користувача
     const user = await User.create({ email, password: hashedPassword });
 
     // створення токену для користувача
-    const { _id: userId } = user;
-    const payload = { id: userId };
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "30d" });
-    const userUpdate = await User.findByIdAndUpdate(
-      userId,
-      { token },
-      {
-        new: true,
-      },
-    );
-    return userUpdate;
+    // const { _id: userId } = user;
+    // const payload = { id: userId };
+    // const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "30d" });
+    // const userUpdate = await User.findByIdAndUpdate(
+    //   userId,
+    //   { token },
+    //   {
+    //     new: true,
+    //   },
+    // );
+    // return userUpdate;
+    return user;
   } catch (error) {
     console.warn(error.message);
 
