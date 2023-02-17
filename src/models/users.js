@@ -7,14 +7,12 @@ const { User } = require("../schemas/users");
 const { JWT_SECRET } = process.env;
 
 const addUser = async (email, password) => {
-  // hash паролю
-
   try {
     // hash паролю
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(password, salt);
+    // const salt = await bcrypt.genSalt();
+    // const hashedPassword = await bcrypt.hash(password, salt);
     // створення користувача
-    const user = await User.create({ email, password: hashedPassword });
+    const user = await User.create({ email, password });
 
     // створення токену для користувача
     // const { _id: userId } = user;
