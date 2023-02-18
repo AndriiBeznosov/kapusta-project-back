@@ -4,7 +4,6 @@ const app = require("./src/app");
 const mongoose = require("mongoose");
 
 mongoose.set("strictQuery", false);
-
 const { URL_DB_MONGODB, PORT } = process.env;
 
 (async function () {
