@@ -3,6 +3,12 @@ const { addUser, loginUser, logoutUser } = require("../models/users");
 async function register(req, res, _) {
   try {
     const { email, password } = req.body;
+
+    if (password.length < 6) {
+      return res
+        .status(404)
+        .json("password should be at least 6 characters long");
+    }
     const user = await addUser(email, password);
     return res.status(201).json({ user: user });
   } catch (error) {
@@ -13,18 +19,18 @@ async function register(req, res, _) {
 async function login(req, res, _) {
   try {
     const { email, password } = req.body;
-    await loginUser(email, password);
-    res.json({ message: "OK" });
+    const user = await loginUser(email, password);
+    return res.json(user);
   } catch (error) {
     console.warn(error);
     res.status(error.code).json({ message: error.message });
   }
 }
 async function logout(req, res, _) {
-  const { token } = req.params;
+  const { id } = req.user;
   try {
-    await logoutUser(token);
-    res.json({ message: "OK" });
+    await logoutUser(id);
+    return res.status(201).json({ message: "The exit was successful" });
   } catch (error) {
     console.warn(error);
     res.status(error.code).json({ message: error.message });
