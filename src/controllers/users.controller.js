@@ -31,6 +31,11 @@ async function logout(req, res, _) {
   }
 }
 
+async function changeBalance(req, res, _) {
+  const { id } = req.user;
+  const User.findByIdAndUpdate()
+}
+
 module.exports = {
   register,
   login,
