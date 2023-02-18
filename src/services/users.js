@@ -86,6 +86,9 @@ const logoutUser = async (id) => {
 };
 
 const addBalance = async (id, balance) => {
+  if (!balance) {
+    throw new HttpError("Not valid balance", 400);
+  }
   try {
     await User.findByIdAndUpdate(id, { balance }, { new: true });
   } catch (error) {
