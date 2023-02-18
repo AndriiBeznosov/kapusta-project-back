@@ -1,4 +1,4 @@
-const { addUser, loginUser, logoutUser } = require("../models/users");
+const { addUser, loginUser, logoutUser } = require("../services/users");
 
 async function register(req, res, _) {
   try {

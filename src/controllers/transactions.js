@@ -1,4 +1,4 @@
-const { addTransaction } = require("../models/transactions");
+const { addTransaction } = require("../services/transactions");
 
 async function transaction(req, res, _) {
   try {
