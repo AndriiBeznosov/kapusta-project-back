@@ -22,10 +22,6 @@ const schema = new Schema(
       type: String,
       required: true,
     },
-    day: {
-      type: String,
-      required: true,
-    },
     month: {
       type: String,
       required: true,
@@ -40,7 +36,7 @@ const schema = new Schema(
     },
     userId: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: "user",
       require: true,
     },
   },
