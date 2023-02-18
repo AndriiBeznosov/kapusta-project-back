@@ -23,7 +23,7 @@ const addUser = async (email, password) => {
       { token },
       {
         new: true,
-      },
+      }
     );
     return userUpdate;
   } catch (error) {
@@ -31,7 +31,7 @@ const addUser = async (email, password) => {
     if (error.message.includes("E11000 duplicate key error")) {
       throw new HttpError(
         "The email is already taken by another user, try logging in ",
-        409,
+        409
       );
     }
 
@@ -58,7 +58,7 @@ const loginUser = async (email, password) => {
       { token },
       {
         new: true,
-      },
+      }
     );
 
     return userUpdate;
@@ -78,8 +78,16 @@ const logoutUser = async (id) => {
       { token: null },
       {
         new: true,
-      },
+      }
     );
+  } catch (error) {
+    throw new HttpError(error.message, 404);
+  }
+};
+
+const addBalance = async (id, balance) => {
+  try {
+    await User.findByIdAndUpdate(id, { balance }, { new: true });
   } catch (error) {
     throw new HttpError(error.message, 404);
   }
@@ -89,4 +97,5 @@ module.exports = {
   addUser,
   loginUser,
   logoutUser,
+  addBalance,
 };

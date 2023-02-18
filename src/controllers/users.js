@@ -1,4 +1,9 @@
-const { addUser, loginUser, logoutUser } = require("../services/users");
+const {
+  addUser,
+  loginUser,
+  logoutUser,
+  addBalance,
+} = require("../services/users");
 
 async function register(req, res, _) {
   try {
@@ -38,13 +43,21 @@ async function logout(req, res, _) {
   }
 }
 
-// async function changeBalance(req, res, _) {
-//   const { id } = req.user;
-//   const User.findByIdAndUpdate()
-// }
+async function changeBalance(req, res, _) {
+  const { id } = req.user;
+  const { balance } = req.body;
+  try {
+    await addBalance(id, balance);
+    return res.status(201).json({ message: "The exit was successful" });
+  } catch (error) {
+    console.warn(error);
+    res.status(error.code).json({ message: error.message });
+  }
+}
 
 module.exports = {
   register,
   login,
   logout,
+  changeBalance,
 };
