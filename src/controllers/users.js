@@ -46,6 +46,7 @@ async function logout(req, res, _) {
 async function changeBalance(req, res, _) {
   const { id } = req.user;
   const { balance } = req.body;
+
   try {
     await addBalance(id, balance);
     return res.status(201).json({ message: "The exit was successful" });
