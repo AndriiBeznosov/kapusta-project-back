@@ -28,6 +28,7 @@ async function login(req, res, _) {
 }
 async function logout(req, res, _) {
   const { id } = req.user;
+
   try {
     await logoutUser(id);
     return res.status(201).json({ message: "The exit was successful" });
@@ -37,10 +38,10 @@ async function logout(req, res, _) {
   }
 }
 
-async function changeBalance(req, res, _) {
-  const { id } = req.user;
-  // const User.findByIdAndUpdate()
-}
+// async function changeBalance(req, res, _) {
+//   const { id } = req.user;
+//   const User.findByIdAndUpdate()
+// }
 
 module.exports = {
   register,
