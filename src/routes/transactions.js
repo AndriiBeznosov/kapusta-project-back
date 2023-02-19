@@ -11,6 +11,6 @@ const userTransaction = express.Router();
 
 userTransaction.post("/", auth, tryCatchWrapper(transaction));
 userTransaction.delete("/delete/:id", auth, tryCatchWrapper(deleteTransaction));
-userTransaction.get("/reportsByMonth", auth, tryCatchWrapper(reportsByMonth));
+userTransaction.get("/summary", auth, tryCatchWrapper(reportsByMonth));
 
 module.exports = userTransaction;
