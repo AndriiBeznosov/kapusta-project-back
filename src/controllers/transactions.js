@@ -1,5 +1,6 @@
 const {
   addTransaction,
+  sumByMonth,
   getInformationPeriod,
 } = require('../services/transactions');
 
@@ -33,6 +34,16 @@ const deleteTransaction = async (req, res, next) => {
     next();
   }
 };
+
+const reportsByMonth = async (req, res) => {
+  try {
+    const { id } = req.user;
+    const transaction = await sumByMonth(id);
+    res.status(200).json({ transaction });
+  } catch (error) {
+    res.status(error.code).json({ message: error.message });
+  }
+};
 const informationPeriod = async (req, res, next) => {
   try {
     const { _id } = req.user;
@@ -50,5 +61,6 @@ const informationPeriod = async (req, res, next) => {
 module.exports = {
   transaction,
   deleteTransaction,
+  reportsByMonth,
   informationPeriod,
 };
