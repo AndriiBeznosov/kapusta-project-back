@@ -3,7 +3,9 @@ const {
   loginUser,
   logoutUser,
   addBalance,
+  verifyUserEmail
 } = require("../services/users");
+
 
 async function register(req, res, _) {
   try {
@@ -56,9 +58,22 @@ async function changeBalance(req, res, _) {
   }
 }
 
+ async  function verifyEmail (req, res, _){
+  const { verificationToken } = req.params;
+   
+   try {
+    await verifyUserEmail(verificationToken)
+    return res.status(200).json({ message: 'Verification success' });
+  } catch (error) {
+
+    res.status(error.code).json({ message: error.message });
+  }
+};
+
 module.exports = {
   register,
   login,
   logout,
   changeBalance,
+  verifyEmail
 };
