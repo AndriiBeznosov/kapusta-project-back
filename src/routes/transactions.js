@@ -12,7 +12,7 @@ const userTransaction = express.Router();
 
 userTransaction.post('/', auth, tryCatchWrapper(transaction));
 userTransaction.delete('/delete/:id', auth, tryCatchWrapper(deleteTransaction));
-userTransaction.get('/summary', auth, tryCatchWrapper(reportsByMonth));
+userTransaction.post('/summary', auth, tryCatchWrapper(reportsByMonth));
 userTransaction.get(
   '/information-period',
   auth,
