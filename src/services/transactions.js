@@ -28,12 +28,16 @@ const getInformationPeriod = async (id, year, month, operation) => {
   }
 };
 
-const sumByMonth = async (id) => {
+const sumByMonth = async (id, operation) => {
   const today = new Date();
   const year = today.getFullYear();
 
   try {
-    const transactions = await Transaction.find({ userId: id, year });
+    const transactions = await Transaction.find({
+      userId: id,
+      year,
+      operation,
+    });
 
     const result = transactions.reduce((acc, item) => {
       if (Object.keys(acc).includes(item.month)) {
@@ -44,7 +48,7 @@ const sumByMonth = async (id) => {
       return acc;
     }, {});
     if (!Object.keys(result).length) {
-      throw new HttpError("no result by this year", 400);
+      throw new HttpError('no result by this year', 400);
     }
     return result;
   } catch (error) {

@@ -37,8 +37,9 @@ const deleteTransaction = async (req, res, next) => {
 
 const reportsByMonth = async (req, res) => {
   try {
+    const { operation } = req.body;
     const { id } = req.user;
-    const transaction = await sumByMonth(id);
+    const transaction = await sumByMonth(id, operation);
     res.status(200).json({ transaction });
   } catch (error) {
     res.status(error.code).json({ message: error.message });
