@@ -1,16 +1,16 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model } = require('mongoose');
 
 const schema = new Schema(
   {
     password: {
       type: String,
-      required: [true, "Password is required"],
+      required: [true, 'Password is required'],
     },
     email: {
       type: String,
-      required: [true, "Email is required"],
+      required: [true, 'Email is required'],
       unique: true,
-      match: [/[a-z0-9]+@[a-z0-9]/, "user email is not valid"],
+      match: [/[a-z0-9]+@[a-z0-9]/, 'user email is not valid'],
     },
     token: {
       type: String,
@@ -26,12 +26,12 @@ const schema = new Schema(
     },
     verificationToken: {
       type: String,
-      required: [true, "Verify token is required"],
+      required: [true, 'Verify token is required'],
     },
   },
-  { versionKey: false, timestamps: true },
+  { versionKey: false, timestamps: true }
 );
 
-const User = model("user", schema);
+const User = model('user', schema);
 
 module.exports = { User };
