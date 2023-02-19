@@ -30,8 +30,12 @@ const deleteTransaction = async (req, res, next) => {
     next();
   }
 };
+const information = async (req, res, next) => {
+  console.log("information");
+};
 
 module.exports = {
   transaction,
   deleteTransaction,
+  information,
 };
