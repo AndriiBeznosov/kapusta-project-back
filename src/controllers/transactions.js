@@ -31,7 +31,12 @@ const deleteTransaction = async (req, res, next) => {
   }
 };
 
+const reportsByMonth = async (_, res) => {
+  res.status(200);
+};
+
 module.exports = {
   transaction,
   deleteTransaction,
+  reportsByMonth,
 };
