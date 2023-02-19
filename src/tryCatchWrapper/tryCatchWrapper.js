@@ -1,6 +1,6 @@
-const HttpError = require("../httpError");
+const HttpError = require('../httpError');
 
-const tryCatchWrapper = (enpointFn) => {
+const tryCatchWrapper = enpointFn => {
   return async (req, res, next) => {
     try {
       await enpointFn(req, res, next);

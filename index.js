@@ -1,18 +1,18 @@
-require("dotenv").config();
+require('dotenv').config();
 
-const app = require("./src/app");
-const mongoose = require("mongoose");
+const app = require('./src/app');
+const mongoose = require('mongoose');
 
-mongoose.set("strictQuery", false);
+mongoose.set('strictQuery', false);
 const { URL_DB_MONGODB, PORT } = process.env;
 
 (async function () {
   try {
     const connection = await mongoose.connect(URL_DB_MONGODB);
-    console.log("Database connection successful");
+    console.log('Database connection successful');
     return connection;
   } catch (error) {
-    console.error("SERVER CONECTION ERROR: ", error.message);
+    console.error('SERVER CONECTION ERROR: ', error.message);
 
     process.exit(1);
   }
@@ -22,6 +22,6 @@ const { URL_DB_MONGODB, PORT } = process.env;
       console.log(`Server running. Use our API on port: ${PORT}`);
     });
   })
-  .catch((err) =>
-    console.log(`Server not running. Error message: ${err.message}`),
+  .catch(err =>
+    console.log(`Server not running. Error message: ${err.message}`)
   );

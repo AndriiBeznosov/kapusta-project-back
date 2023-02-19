@@ -1,16 +1,16 @@
-require("dotenv").config();
+require('dotenv').config();
 const { JWT_SECRET } = process.env;
 
-const bcryptjs = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const { HttpError } = require("../httpError");
-const { User } = require("../schemas/users");
+const bcryptjs = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const { HttpError } = require('../httpError');
+const { User } = require('../schemas/users');
 const {
   createVerificationToken,
-} = require("../helpers/createVerificationToken");
+} = require('../helpers/createVerificationToken');
 
-const { createConfirmationMail } = require("../helpers/createConfirmationMail");
-const { sendMail } = require("../helpers/sendMail");
+const { createConfirmationMail } = require('../helpers/createConfirmationMail');
+const { sendMail } = require('../helpers/sendMail');
 
 const addUser = async (email, password) => {
   try {
@@ -35,10 +35,10 @@ const addUser = async (email, password) => {
     };
   } catch (error) {
     console.warn(error.message);
-    if (error.message.includes("E11000 duplicate key error")) {
+    if (error.message.includes('E11000 duplicate key error')) {
       throw new HttpError(
-        "The email is already taken by another user, try logging in ",
-        409,
+        'The email is already taken by another user, try logging in ',
+        409
       );
     }
 
@@ -50,50 +50,50 @@ const loginUser = async (email, password) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      throw new HttpError("Invalid email address or password", 401);
+      throw new HttpError('Invalid email address or password', 401);
     }
 
     const isValidPass = await bcryptjs.compare(password, user.password);
     if (!isValidPass) {
-      throw new HttpError("Invalid email address or password", 401);
+      throw new HttpError('Invalid email address or password', 401);
     }
 
     if (!user.verify) {
       // create verification mail and send link
       const mail = createConfirmationMail(user.email, user.verificationToken);
       await sendMail(mail);
-      throw new HttpError("Do not verified email", 401);
+      throw new HttpError('Do not verified email', 401);
     }
     const { _id: userId } = user;
     const payload = { id: userId };
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "30d" });
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '30d' });
 
     const userUpdate = await User.findByIdAndUpdate(
       userId,
       { token },
       {
         new: true,
-      },
+      }
     );
 
     return userUpdate;
   } catch (error) {
     console.warn(error.message);
-    if (error.message.includes("Not valid email")) {
+    if (error.message.includes('Not valid email')) {
       throw new HttpError(error.message, error.code);
     }
     throw new HttpError(error.message, error.code);
   }
 };
 
-const logoutUser = async (id) => {
+const logoutUser = async id => {
   try {
     await User.findByIdAndUpdate(
       id,
       { token: null },
       {
         new: true,
-      },
+      }
     );
   } catch (error) {
     throw new HttpError(error.message, 404);
@@ -102,7 +102,7 @@ const logoutUser = async (id) => {
 
 const addBalance = async (id, balance) => {
   if (!balance) {
-    throw new HttpError("Not valid balance", 400);
+    throw new HttpError('Not valid balance', 400);
   }
   try {
     await User.findByIdAndUpdate(id, { balance }, { new: true });
@@ -111,17 +111,17 @@ const addBalance = async (id, balance) => {
   }
 };
 
-const verifyUserEmail = async (verificationToken) => {
+const verifyUserEmail = async verificationToken => {
   try {
     const user = await User.findOne({ verificationToken });
 
     if (!user) {
-      throw new HttpError("Not found", 404);
+      throw new HttpError('Not found', 404);
     }
     // створення токену для користувача
     const { _id: userId } = user;
     const payload = { id: userId };
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "30d" });
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '30d' });
 
     const userUpdate = await User.findByIdAndUpdate(
       user._id,
@@ -132,7 +132,7 @@ const verifyUserEmail = async (verificationToken) => {
       },
       {
         new: true,
-      },
+      }
     );
 
     return userUpdate;

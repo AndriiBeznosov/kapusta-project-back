@@ -1,4 +1,4 @@
-const sendGridMail = require("@sendgrid/mail");
+const sendGridMail = require('@sendgrid/mail');
 
 // set API key in the instance from env
 sendGridMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -6,8 +6,8 @@ sendGridMail.setApiKey(process.env.SENDGRID_API_KEY);
 // create sendMail function
 // use createConfirmationMail function to crate objConfig
 
-const sendMail = async (objConfig) => {
-  const senderEmail = "kapusta.confirm@gmail.com";
+const sendMail = async objConfig => {
+  const senderEmail = 'kapusta.confirm@gmail.com';
 
   const message = { ...objConfig, from: senderEmail };
 

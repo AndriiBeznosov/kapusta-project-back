@@ -4,7 +4,7 @@ const {
   logoutUser,
   addBalance,
   verifyUserEmail,
-} = require("../services/users");
+} = require('../services/users');
 
 const register = async (req, res, _) => {
   try {
@@ -13,7 +13,7 @@ const register = async (req, res, _) => {
     if (password.length < 6) {
       return res
         .status(404)
-        .json("password should be at least 6 characters long");
+        .json('password should be at least 6 characters long');
     }
     const user = await addUser(email, password);
     return res.status(201).json({ user: user });
@@ -38,7 +38,7 @@ const logout = async (req, res, _) => {
 
   try {
     await logoutUser(id);
-    return res.status(201).json({ message: "The exit was successful" });
+    return res.status(201).json({ message: 'The exit was successful' });
   } catch (error) {
     console.warn(error);
     res.status(error.code).json({ message: error.message });
@@ -51,7 +51,7 @@ const changeBalance = async (req, res, _) => {
 
   try {
     await addBalance(id, balance);
-    return res.status(201).json({ message: "The exit was successful" });
+    return res.status(201).json({ message: 'The exit was successful' });
   } catch (error) {
     console.warn(error);
     res.status(error.code).json({ message: error.message });
@@ -64,7 +64,7 @@ const verifyEmail = async (req, res, _) => {
   try {
     const user = await verifyUserEmail(verificationToken);
     return res.status(200).json({
-      message: "Verification success",
+      message: 'Verification success',
       token: user.token,
     });
   } catch (error) {
