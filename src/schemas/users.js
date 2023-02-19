@@ -20,16 +20,16 @@ const schema = new Schema(
       type: Number,
       default: 0,
     },
-     verify: {
+    verify: {
       type: Boolean,
       default: false,
     },
     verificationToken: {
       type: String,
-      required: [true, 'Verify token is required'],
+      required: [true, "Verify token is required"],
     },
   },
-  { versionKey: false, timestamps: true }
+  { versionKey: false, timestamps: true },
 );
 
 const User = model("user", schema);

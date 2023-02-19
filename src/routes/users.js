@@ -4,7 +4,7 @@ const {
   login,
   logout,
   changeBalance,
-  verifyEmail
+  verifyEmail,
 } = require("../controllers/users");
 const { tryCatchWrapper } = require("../tryCatchWrapper/tryCatchWrapper");
 const { auth } = require("../middlewares/auth");
@@ -16,6 +16,6 @@ usersRouter.post("/login", tryCatchWrapper(login));
 usersRouter.patch("/logout", auth, tryCatchWrapper(logout));
 usersRouter.patch("/balance", auth, tryCatchWrapper(changeBalance));
 
-usersRouter.get('/verify/:verificationToken', tryCatchWrapper(verifyEmail))
+usersRouter.get("/verify/:verificationToken", tryCatchWrapper(verifyEmail));
 
 module.exports = usersRouter;

@@ -5,10 +5,12 @@ const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { HttpError } = require("../httpError");
 const { User } = require("../schemas/users");
-const {createVerificationToken} = require('../helpers/createVerificationToken')
+const {
+  createVerificationToken,
+} = require("../helpers/createVerificationToken");
 
-const {createConfirmationMail} = require('../helpers/createConfirmationMail')
-const { sendMail } = require('../helpers/sendMail')
+const { createConfirmationMail } = require("../helpers/createConfirmationMail");
+const { sendMail } = require("../helpers/sendMail");
 
 const addUser = async (email, password) => {
   try {
@@ -18,33 +20,25 @@ const addUser = async (email, password) => {
     // створення токену верифікації імейлу
     const verificationToken = createVerificationToken();
     // створення користувача
-    const user = await User.create({ email, password: hashedPassword,verificationToken });
+    const user = await User.create({
+      email,
+      password: hashedPassword,
+      verificationToken,
+    });
 
-       // create verification mail and send link
+    // create verification mail and send link
     const mail = createConfirmationMail(user.email, user.verificationToken);
     await sendMail(mail);
 
-    // створення токену для користувача
-    const { _id: userId } = user;
-    const payload = { id: userId };
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "30d" });
-    
-    const userUpdate = await User.findByIdAndUpdate(
-      userId,
-      { token },
-      {
-        new: true,
-      }
-    );
- 
-
-    return userUpdate;
+    return {
+      message: `User registration was successful, a verification email ${user.email} was sent to you`,
+    };
   } catch (error) {
     console.warn(error.message);
     if (error.message.includes("E11000 duplicate key error")) {
       throw new HttpError(
         "The email is already taken by another user, try logging in ",
-        409
+        409,
       );
     }
 
@@ -54,13 +48,21 @@ const addUser = async (email, password) => {
 const loginUser = async (email, password) => {
   try {
     const user = await User.findOne({ email });
+
     if (!user) {
-      throw new HttpError("Not valid email or postal address", 401);
+      throw new HttpError("Invalid email address or password", 401);
     }
 
     const isValidPass = await bcryptjs.compare(password, user.password);
     if (!isValidPass) {
-      throw new HttpError("Not valid password", 401);
+      throw new HttpError("Invalid email address or password", 401);
+    }
+
+    if (!user.verify) {
+      // create verification mail and send link
+      const mail = createConfirmationMail(user.email, user.verificationToken);
+      await sendMail(mail);
+      throw new HttpError("Do not verified email", 401);
     }
     const { _id: userId } = user;
     const payload = { id: userId };
@@ -71,7 +73,7 @@ const loginUser = async (email, password) => {
       { token },
       {
         new: true,
-      }
+      },
     );
 
     return userUpdate;
@@ -91,7 +93,7 @@ const logoutUser = async (id) => {
       { token: null },
       {
         new: true,
-      }
+      },
     );
   } catch (error) {
     throw new HttpError(error.message, 404);
@@ -116,22 +118,33 @@ const verifyUserEmail = async (verificationToken) => {
     if (!user) {
       throw new HttpError("Not found", 404);
     }
+    // створення токену для користувача
+    const { _id: userId } = user;
+    const payload = { id: userId };
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "30d" });
 
-    await User.findByIdAndUpdate(user._id, {
-      verify: true,
-      verificationToken: null,
-    });
+    const userUpdate = await User.findByIdAndUpdate(
+      user._id,
+      {
+        verify: true,
+        verificationToken: null,
+        token,
+      },
+      {
+        new: true,
+      },
+    );
 
-    
+    return userUpdate;
   } catch (error) {
-   throw new HttpError(error.message, error.code);
+    throw new HttpError(error.message, error.code);
   }
-}
+};
 
 module.exports = {
   addUser,
   loginUser,
   logoutUser,
   addBalance,
-  verifyUserEmail
+  verifyUserEmail,
 };

@@ -1,8 +1,8 @@
-const { addTransaction } = require('../services/transactions');
+const { addTransaction } = require("../services/transactions");
 
-const { Transaction } = require('../schemas/transactions');
+const { Transaction } = require("../schemas/transactions");
 
-async function transaction(req, res, _) {
+const transaction = async (req, res, _) => {
   try {
     const operation = await addTransaction(req.body, req.user._id);
     return res.status(201).json({ data: operation });
@@ -10,26 +10,26 @@ async function transaction(req, res, _) {
     console.warn(error);
     res.status(error.code).json({ message: error.message });
   }
-}
+};
 
-async function deleteTransaction(req, res, next) {
+const deleteTransaction = async (req, res, next) => {
   try {
     const { id } = req.params;
     const result = await Transaction.findByIdAndRemove({ _id: id });
 
     if (!result) {
       return res.status(404).json({
-        status: 'error',
-        message: 'Id of transaction not found',
+        status: "error",
+        message: "Id of transaction not found",
       });
     }
     res.status(200).json({
-      message: 'Your transaction was deleted!',
+      message: "Your transaction was deleted!",
     });
   } catch (error) {
     next();
   }
-}
+};
 
 module.exports = {
   transaction,

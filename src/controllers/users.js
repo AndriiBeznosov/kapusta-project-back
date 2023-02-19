@@ -3,11 +3,10 @@ const {
   loginUser,
   logoutUser,
   addBalance,
-  verifyUserEmail
+  verifyUserEmail,
 } = require("../services/users");
 
-
-async function register(req, res, _) {
+const register = async (req, res, _) => {
   try {
     const { email, password } = req.body;
 
@@ -22,8 +21,9 @@ async function register(req, res, _) {
     console.warn(error);
     res.status(error.code).json({ message: error.message });
   }
-}
-async function login(req, res, _) {
+};
+
+const login = async (req, res, _) => {
   try {
     const { email, password } = req.body;
     const user = await loginUser(email, password);
@@ -32,8 +32,8 @@ async function login(req, res, _) {
     console.warn(error);
     res.status(error.code).json({ message: error.message });
   }
-}
-async function logout(req, res, _) {
+};
+const logout = async (req, res, _) => {
   const { id } = req.user;
 
   try {
@@ -43,9 +43,9 @@ async function logout(req, res, _) {
     console.warn(error);
     res.status(error.code).json({ message: error.message });
   }
-}
+};
 
-async function changeBalance(req, res, _) {
+const changeBalance = async (req, res, _) => {
   const { id } = req.user;
   const { balance } = req.body;
 
@@ -56,16 +56,18 @@ async function changeBalance(req, res, _) {
     console.warn(error);
     res.status(error.code).json({ message: error.message });
   }
-}
+};
 
- async  function verifyEmail (req, res, _){
+const verifyEmail = async (req, res, _) => {
   const { verificationToken } = req.params;
-   
-   try {
-    await verifyUserEmail(verificationToken)
-    return res.status(200).json({ message: 'Verification success' });
-  } catch (error) {
 
+  try {
+    const user = await verifyUserEmail(verificationToken);
+    return res.status(200).json({
+      message: "Verification success",
+      token: user.token,
+    });
+  } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
 };
@@ -75,5 +77,5 @@ module.exports = {
   login,
   logout,
   changeBalance,
-  verifyEmail
+  verifyEmail,
 };
