@@ -4,7 +4,6 @@ const {
   deleteTransaction,
   informationPeriod,
   summaryByMonth,
-  reportsByMonth,
   posts,
 } = require('../controllers/transactions');
 const { tryCatchWrapper } = require('../tryCatchWrapper/tryCatchWrapper');

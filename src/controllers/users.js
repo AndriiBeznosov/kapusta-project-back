@@ -4,6 +4,7 @@ const {
   logoutUser,
   addBalance,
   verifyUserEmail,
+  getAll,
 } = require('../services/users');
 
 const register = async (req, res, _) => {
@@ -72,10 +73,22 @@ const verifyEmail = async (req, res, _) => {
   }
 };
 
+const getMe = async (req, res, _) => {
+  const { id } = req.user;
+  try {
+    const userInfo = await getAll(id);
+    return res.status(201).json(userInfo);
+  } catch (error) {
+    console.warn(error);
+    res.status(error.code).json({ message: error.message });
+  }
+};
+
 module.exports = {
   register,
   login,
   logout,
   changeBalance,
   verifyEmail,
+  getMe,
 };

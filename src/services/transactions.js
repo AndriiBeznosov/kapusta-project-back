@@ -10,13 +10,12 @@ const addTransaction = async (data, id) => {
     throw new HttpError(error.message, 404);
   }
 };
-const getInformationPeriod = async (id, year, month, operation) => {
+const getInformationPeriod = async (id, year, month) => {
   try {
     const transactions = await Transaction.find({
       userId: id,
       year,
       month,
-      operation,
     });
     if (!transactions.length) {
       return { message: 'There is no data for this request' };

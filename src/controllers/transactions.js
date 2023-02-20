@@ -49,16 +49,12 @@ const summaryByMonth = async (req, res) => {
 const informationPeriod = async (req, res, next) => {
   try {
     const { _id } = req.user;
-    const { year, month, operation } = req.body;
-    const informations = await getInformationPeriod(
-      _id,
-      year,
-      month,
-      operation
-    );
+    const { year, month } = req.body;
+    const informations = await getInformationPeriod(_id, year, month);
     res.status(200).json(informations);
   } catch (error) {}
 };
+
 const posts = async (req, res, next) => {
   try {
     const informations = await getPosts();

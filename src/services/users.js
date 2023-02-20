@@ -5,6 +5,8 @@ const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { HttpError } = require('../httpError');
 const { User } = require('../schemas/users');
+const { Transaction } = require('../schemas/transactions');
+
 const {
   createVerificationToken,
 } = require('../helpers/createVerificationToken');
@@ -141,10 +143,28 @@ const verifyUserEmail = async verificationToken => {
   }
 };
 
+const getAll = async id => {
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      throw new HttpError('Invalid email address or password', 401);
+    }
+    const transactions = await Transaction.find({
+      userId: id,
+    });
+    if (!transactions.length) {
+      return { message: 'There is no data for this request' };
+    }
+
+    return { tokenUser: user.token, transactions };
+  } catch (error) {}
+};
+
 module.exports = {
   addUser,
   loginUser,
   logoutUser,
   addBalance,
   verifyUserEmail,
+  getAll,
 };
