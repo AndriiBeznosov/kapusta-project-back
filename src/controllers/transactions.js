@@ -1,6 +1,6 @@
 const {
   addTransaction,
-  sumByMonth,
+  getSummary,
   getInformationPeriod,
   getPosts,
 } = require('../services/transactions');
@@ -36,11 +36,11 @@ const deleteTransaction = async (req, res, next) => {
   }
 };
 
-const reportsByMonth = async (req, res) => {
+const summaryByMonth = async (req, res) => {
   try {
     const { operation } = req.body;
     const { id } = req.user;
-    const transaction = await sumByMonth(id, operation);
+    const transaction = await getSummary(id, operation);
     res.status(200).json({ transaction });
   } catch (error) {
     res.status(error.code).json({ message: error.message });
@@ -69,7 +69,7 @@ const posts = async (req, res, next) => {
 module.exports = {
   transaction,
   deleteTransaction,
-  reportsByMonth,
+  summaryByMonth,
   informationPeriod,
   posts,
 };
