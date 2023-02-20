@@ -14,6 +14,9 @@ app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json());
 
+app.use('/', (req, res) => {
+  res.send('Welcome to the server home page');
+});
 app.use('/api/users', usersRouter);
 app.use('/api/transaction', usersTransaction);
 
