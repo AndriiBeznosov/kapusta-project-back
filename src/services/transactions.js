@@ -28,7 +28,7 @@ const getInformationPeriod = async (id, year, month, operation) => {
   }
 };
 
-const sumByMonth = async (id, operation) => {
+const getSummary = async (id, operation) => {
   const today = new Date();
   const year = today.getFullYear();
 
@@ -50,14 +50,22 @@ const sumByMonth = async (id, operation) => {
     if (!Object.keys(result).length) {
       throw new HttpError('no result by this year', 400);
     }
-    return result;
+    const newRes = [...Object.entries(result)];
+    const arrNew = newRes.map(itm => {
+      const trans = {
+        month: itm[0],
+        sum: itm[1],
+      };
+      return trans;
+    });
+    return arrNew;
   } catch (error) {
     throw new HttpError(error.message, 404);
   }
 };
 
 module.exports = {
-  sumByMonth,
+  getSummary,
   addTransaction,
   getInformationPeriod,
 };
