@@ -56,8 +56,22 @@ const sumByMonth = async (id, operation) => {
   }
 };
 
+const getPosts = async () => {
+  try {
+    const posts = await Transaction.find();
+    // if (!posts.length) {
+    //   return { message: 'There is no data for this request' };
+    // }
+
+    return posts;
+  } catch (error) {
+    throw new HttpError(error.message, 404);
+  }
+};
+
 module.exports = {
   sumByMonth,
   addTransaction,
   getInformationPeriod,
+  getPosts,
 };

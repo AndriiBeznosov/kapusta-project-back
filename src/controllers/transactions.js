@@ -2,6 +2,7 @@ const {
   addTransaction,
   sumByMonth,
   getInformationPeriod,
+  getPosts,
 } = require('../services/transactions');
 
 const { Transaction } = require('../schemas/transactions');
@@ -58,10 +59,17 @@ const informationPeriod = async (req, res, next) => {
     res.status(200).json(informations);
   } catch (error) {}
 };
+const posts = async (req, res, next) => {
+  try {
+    const informations = await getPosts();
+    res.status(200).json(informations);
+  } catch (error) {}
+};
 
 module.exports = {
   transaction,
   deleteTransaction,
   reportsByMonth,
   informationPeriod,
+  posts,
 };
