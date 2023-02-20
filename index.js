@@ -18,7 +18,7 @@ const { URL_DB_MONGODB, PORT } = process.env;
   }
 })()
   .then(() => {
-    app.listen(PORT, function () {
+    app.listen(PORT || 4444, function () {
       console.log(`Server running. Use our API on port: ${PORT}`);
     });
   })
