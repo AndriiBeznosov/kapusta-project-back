@@ -120,24 +120,13 @@ const verifyUserEmail = async verificationToken => {
     if (!user) {
       throw new HttpError('Not found', 404);
     }
-    // створення токену для користувача
-    const { _id: userId } = user;
-    const payload = { id: userId };
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '30d' });
 
-    const userUpdate = await User.findByIdAndUpdate(
-      user._id,
-      {
-        verify: true,
-        verificationToken: null,
-        token,
-      },
-      {
-        new: true,
-      }
-    );
+    await User.findByIdAndUpdate(user._id, {
+      verify: true,
+      verificationToken: null,
+    });
 
-    return userUpdate;
+    return;
   } catch (error) {
     throw new HttpError(error.message, error.code);
   }
