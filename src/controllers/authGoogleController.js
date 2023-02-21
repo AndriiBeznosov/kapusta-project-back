@@ -10,8 +10,7 @@ const { createLoginInfoMail } = require('../helpers/createConfirmationMail');
 const { sendMail } = require('../helpers/sendMail');
 
 // Get environment variable
-const { PORT, BASE_URL, GOOGLE_CLIENT_ID, FRONTEND_URL, JWT_SECRET } =
-  process.env;
+const { BASE_URL, GOOGLE_CLIENT_ID, FRONTEND_URL, JWT_SECRET } = process.env;
 
 const { getGoogleToken } = require('../services/getGoogleToken');
 const { getUserData } = require('../services/getUserData');
@@ -20,7 +19,7 @@ const googleAuth = async (req, res) => {
   // Created a query parameter string from an Object
   const stringifiedParams = queryString.stringify({
     client_id: GOOGLE_CLIENT_ID,
-    redirect_uri: `${BASE_URL}:${PORT}/auth/google-redirect`,
+    redirect_uri: `${BASE_URL}/auth/google-redirect`,
     scope: [
       'https://www.googleapis.com/auth/userinfo.email',
       'https://www.googleapis.com/auth/userinfo.profile',
@@ -82,7 +81,7 @@ const googleRedirect = async (req, res) => {
 
     const user = await loginUser(email, createdPassword);
 
-    return res.redirect(`${FRONTEND_URL}/google-redirect/?token=${user.token}`);
+    return res.redirect(`${FRONTEND_URL}/google-redirect?token=${user.token}`);
   }
 
   // User already exists. Creating access and refresh tokens and redirecting on the front-end rout
@@ -98,7 +97,7 @@ const googleRedirect = async (req, res) => {
   );
 
   return res.redirect(
-    `${FRONTEND_URL}/google-redirect/?accessToken=${token}&refreshToken=${'_none_'}`
+    `${FRONTEND_URL}/google-redirect?accessToken=${token}&refreshToken=${'_none_'}`
   );
 
   // return res.redirect(

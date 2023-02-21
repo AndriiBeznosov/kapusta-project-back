@@ -1,9 +1,9 @@
 const HttpError = require('../httpError');
 
-const tryCatchWrapper = enpointFn => {
+const tryCatchWrapper = endpointFn => {
   return async (req, res, next) => {
     try {
-      await enpointFn(req, res, next);
+      await endpointFn(req, res, next);
     } catch (error) {
       // res.status(error.code).json({ message: error.message });
       throw new HttpError(error.code, error.message);
