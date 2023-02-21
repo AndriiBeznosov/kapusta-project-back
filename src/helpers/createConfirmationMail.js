@@ -4,7 +4,7 @@ const createConfirmationMail = (userEmail, verificationToken) => {
     subject: 'Kapusta app. Link to confirm your email',
     html: `
     <h3>Our congratulations! You have successfully registered in the Kapusta app!</h3>
-    </br><a style="text-decoration:none" target='_blank' href='http://localhost:${process.env.PORT}/api/users/verify/${verificationToken}'> <strong> Click on link to confirm your email </strong> </a>
+    </br><a style="text-decoration:none" target='_blank' href=${process.env.SERVER_URL}/api/users/verify/${verificationToken}> <strong> Click on link to confirm your email </strong> </a>
     `,
   };
 
