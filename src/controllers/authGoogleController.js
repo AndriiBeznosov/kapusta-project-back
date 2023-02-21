@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 
 const { User } = require('../schemas/users');
 const { loginUser } = require('../services/users');
-const { createLoginInfoMail } = require('../helpers/createConfirmationMail');
+const { createLoginInfoMail } = require('../helpers/createMail');
 const { sendMail } = require('../helpers/sendMail');
 
 // Get environment variable

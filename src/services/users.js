@@ -11,7 +11,7 @@ const {
   createVerificationToken,
 } = require('../helpers/createVerificationToken');
 
-const { createConfirmationMail } = require('../helpers/createConfirmationMail');
+const { createConfirmationMail } = require('../helpers/createMail');
 const { sendMail } = require('../helpers/sendMail');
 
 const addUser = async (email, password) => {
