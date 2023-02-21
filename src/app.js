@@ -5,14 +5,21 @@ const cors = require('cors');
 const usersRouter = require('./routes/users');
 const usersTransaction = require('./routes/transactions');
 
+// add routes for static html page with test link & google auth routes
+const staticRouter = require('./routes/static');
+const authGoogleRouter = require('./routes/authGoogle');
+
 const app = express();
 
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short';
 
 app.use(logger(formatsLogger));
-
 app.use(cors());
 app.use(express.json());
+
+//  /api/link - test html page vs link jo GoogleAuth
+app.use('/api', staticRouter);
+app.use('/', authGoogleRouter);
 
 app.use('/api/users', usersRouter);
 app.use('/api/transaction', usersTransaction);

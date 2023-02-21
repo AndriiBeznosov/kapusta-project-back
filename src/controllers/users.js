@@ -72,10 +72,11 @@ const verifyEmail = async (req, res, _) => {
   }
 };
 
+
 module.exports = {
   register,
   login,
   logout,
   changeBalance,
-  verifyEmail,
+  verifyEmail
 };

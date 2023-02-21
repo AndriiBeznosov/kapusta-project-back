@@ -4,7 +4,7 @@ const {
   login,
   logout,
   changeBalance,
-  verifyEmail,
+  verifyEmail
 } = require('../controllers/users');
 const { tryCatchWrapper } = require('../tryCatchWrapper/tryCatchWrapper');
 const { auth } = require('../middlewares/auth');
