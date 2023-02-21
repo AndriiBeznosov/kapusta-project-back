@@ -22,7 +22,7 @@ const createLoginInfoMail = (userEmail, password) => {
         <p> Your password was randomly generated.</p>
         <p>Here is </p>
         <p><strong> LogIn: </strong>${userEmail}</p>
-        <p><strong> Password: </strong>${password}.</p>
+        <p><strong> Password: </strong>${password}</p>
         <p>
             You can always change your password in the Kapusta app. Authorize with your login and password or login through Google authorization.
         </p>
