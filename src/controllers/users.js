@@ -63,8 +63,8 @@ const verifyEmail = async (req, res, _) => {
   const { verificationToken } = req.params;
 
   try {
-    await verifyUserEmail(verificationToken);
-    res.redirect('https://vplabunets.github.io/kapusta-project/operations');
+    const user = await verifyUserEmail(verificationToken);
+    res.redirect('https://vplabunets.github.io/kapusta-project/');
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }

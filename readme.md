@@ -18,13 +18,8 @@ and@and.com was sent to you"}
 відправлене посилання для верифікації, потрібно перейти в пошту та пройти
 верифікацію.
 
----
-
-# Посилання перекидає в кабінет додатку, якщо верифікація пройшла успішно.
-
-# ??????????? як відловити відповідь щоб записати токен????
-
----
+Після верифікацію з пошти відбувається rerender на сторінуку
+`https://vplabunets.github.io/kapusta-project/operations`
 
 Також потрібно записати токен в localStorage
 
@@ -60,7 +55,7 @@ and@and.com was sent to you"}
 
   Відповідь, вся інформація яка стосується по User
 
-## GET Верифікація користувача
+## GET Верифікація користувача (відбувається через пошту)
 
 При реєстрації створюється користувач з: -- <verify: false> --
 <verificationToken: "Fda8EyukRCVXpU2ofhEFj"> На пошту відправляється посилання,
@@ -79,7 +74,6 @@ and@and.com was sent to you"}
   window.localStorage.getItem("token"); return config; });
 
 - `https://kapusta-project-back-production.up.railway.app/api/users/balance/verify/:verificationToken`
-  #############
 
 ## Transaction /api/transaction ----------------
 
