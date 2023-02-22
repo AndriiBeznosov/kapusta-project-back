@@ -5,12 +5,27 @@ const {
   getPosts,
 } = require('../services/transactions');
 
+const {
+  updateUserBalance,
+} = require('../services/transactionServices/updateUserBalance');
 const { Transaction } = require('../schemas/transactions');
 
 const newTransaction = async (req, res, _) => {
   try {
-    const operation = await addTransaction(req.body, req.user._id);
-    return res.status(201).json({ data: operation });
+    const transaction = await addTransaction(req.body, req.user._id);
+
+    // Getting parameters for updating user balance
+    const { userId, operation: operationType, sum: operationSum } = transaction;
+    // Update user balance in DB
+    const updatedUserBalance = await updateUserBalance(
+      userId,
+      operationType,
+      operationSum
+    );
+
+    return res
+      .status(201)
+      .json({ data: transaction, user: { balance: updatedUserBalance } });
   } catch (error) {
     console.warn(error);
     res.status(error.code).json({ message: error.message });
