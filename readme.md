@@ -19,9 +19,9 @@ and@and.com was sent to you"}
 верифікацію.
 
 Після верифікацію з пошти відбувається rerender на сторінуку
-`https://vplabunets.github.io/kapusta-project/operations`
+`https://vplabunets.github.io/kapusta-project/`
 
-Також потрібно записати токен в localStorage
+Потрібно пройти login
 
 - `https://kapusta-project-back-production.up.railway.app/api/users/login`
 
