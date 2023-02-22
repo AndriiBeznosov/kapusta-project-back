@@ -5,7 +5,6 @@ const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { HttpError } = require('../httpError');
 const { User } = require('../schemas/users');
-const { Transaction } = require('../schemas/transactions');
 
 const {
   createVerificationToken,
@@ -20,14 +19,16 @@ const addUser = async (email, password) => {
     const hashedPassword = await bcryptjs.hash(password, salt);
 
     const verificationToken = createVerificationToken();
+    const indexEmail = email.indexOf('@');
+    const name = email.slice(0, indexEmail).slice(0, 9);
 
     const user = await User.create({
       email,
       password: hashedPassword,
       verificationToken,
+      userName: name,
     });
 
-    // create verification mail and send link
     const mail = createConfirmationMail(user.email, user.verificationToken);
     await sendMail(mail);
 
@@ -60,10 +61,9 @@ const loginUser = async (email, password) => {
     }
 
     if (!user.verify) {
-      // create verification mail and send link
       const mail = createConfirmationMail(user.email, user.verificationToken);
       await sendMail(mail);
-      throw new HttpError('Do not verified email', 401);
+      return { message: `Please confirm the mail ${email}` };
     }
     const { _id: userId } = user;
     const payload = { id: userId };
@@ -79,7 +79,6 @@ const loginUser = async (email, password) => {
 
     return userUpdate;
   } catch (error) {
-    console.warn(error.message);
     if (error.message.includes('Not valid email')) {
       throw new HttpError(error.message, error.code);
     }
@@ -125,26 +124,38 @@ const verifyUserEmail = async verificationToken => {
       verificationToken: null,
     });
 
-    return;
+    return user.token;
   } catch (error) {
     throw new HttpError(error.message, error.code);
   }
 };
 
-const getAll = async id => {
+const getUser = async id => {
   try {
-    const user = await User.findById(id);
-    if (!user) {
+    const {
+      token,
+      _id,
+      email,
+      userName,
+      avatarUrl,
+      balance,
+      verificationToken,
+      verify,
+    } = await User.findById(id);
+    if (!token) {
       throw new HttpError('Invalid email address or password', 401);
     }
-    const transactions = await Transaction.find({
-      userId: id,
-    });
-    if (!transactions.length) {
-      return { message: 'There is no data for this request' };
-    }
 
-    return { tokenUser: user.token, transactions };
+    return {
+      token,
+      _id,
+      email,
+      userName,
+      avatarUrl,
+      balance,
+      verificationToken,
+      verify,
+    };
   } catch (error) {}
 };
 
@@ -170,6 +181,6 @@ module.exports = {
   logoutUser,
   addBalance,
   verifyUserEmail,
-  getAll,
+  getUser,
   update,
 };

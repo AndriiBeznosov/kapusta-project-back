@@ -88,7 +88,6 @@ const googleRedirect = async (req, res) => {
   const accessToken = jwt.sign({ id: user._id }, JWT_SECRET, {
     expiresIn: '1h',
   });
-  console.log('accessToken: ', accessToken);
 
   const { token } = await User.findByIdAndUpdate(
     user._id,

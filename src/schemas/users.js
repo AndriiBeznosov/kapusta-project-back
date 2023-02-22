@@ -28,8 +28,14 @@ const schema = new Schema(
       type: String,
       required: [true, 'Verify token is required'],
     },
-    avatarUrl: String,
-    userName: String,
+    avatarUrl: {
+      type: String,
+      default: '',
+    },
+    userName: {
+      type: String,
+      default: '',
+    },
   },
   { versionKey: false, timestamps: true }
 );
