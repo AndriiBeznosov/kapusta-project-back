@@ -65,11 +65,11 @@ const getSummary = async (id, operation) => {
 
 const getAllTransactionsByOperation = async (id, operation) => {
   try {
-    const posts = await Transaction.find({ userId: id, operation });
-    if (!posts.length) {
-      return { message: 'There is no data for this request', posts };
+    const transactions = await Transaction.find({ userId: id, operation });
+    if (!transactions.length) {
+      return { message: 'There is no data for this request', transactions };
     }
-    return posts;
+    return transactions;
   } catch (error) {
     throw new HttpError(error.message, 404);
   }
