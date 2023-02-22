@@ -46,9 +46,7 @@ const getSummary = async (id, operation) => {
       acc[item.month] = +item.sum;
       return acc;
     }, {});
-    if (!Object.keys(result).length) {
-      throw new HttpError('no result by this year', 400);
-    }
+
     const newRes = [...Object.entries(result)];
     const arrNew = newRes.map(itm => {
       const trans = {
@@ -66,9 +64,7 @@ const getSummary = async (id, operation) => {
 const getAllTransactionsByOperation = async (id, operation) => {
   try {
     const transactions = await Transaction.find({ userId: id, operation });
-    if (!transactions.length) {
-      return { message: 'There is no data for this request', transactions };
-    }
+
     return transactions;
   } catch (error) {
     throw new HttpError(error.message, 404);
