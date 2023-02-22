@@ -63,9 +63,9 @@ const getSummary = async (id, operation) => {
   }
 };
 
-const getAllTransactions = async id => {
+const getAllTransactionsByOperation = async (id, operation) => {
   try {
-    const posts = await Transaction.find({ userId: id });
+    const posts = await Transaction.find({ userId: id, operation });
     if (!posts.length) {
       return { message: 'There is no data for this request', posts };
     }
@@ -79,5 +79,5 @@ module.exports = {
   getSummary,
   addTransaction,
   getInformationPeriod,
-  getAllTransactions,
+  getAllTransactionsByOperation,
 };

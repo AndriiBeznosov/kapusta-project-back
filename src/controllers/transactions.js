@@ -2,7 +2,7 @@ const {
   addTransaction,
   getSummary,
   getInformationPeriod,
-  getAllTransactions,
+  getAllTransactionsByOperation,
 } = require('../services/transactions');
 
 const { Transaction } = require('../schemas/transactions');
@@ -58,7 +58,8 @@ const informationPeriod = async (req, res, next) => {
 const getTransactions = async (req, res, next) => {
   try {
     const { _id } = req.user;
-    const information = await getAllTransactions(_id);
+    const { operation } = req.body;
+    const information = await getAllTransactionsByOperation(_id, operation);
     res.status(200).json(information);
   } catch (error) {}
 };

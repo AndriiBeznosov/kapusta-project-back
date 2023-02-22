@@ -19,11 +19,14 @@ const addUser = async (email, password) => {
     const hashedPassword = await bcryptjs.hash(password, salt);
 
     const verificationToken = createVerificationToken();
+    const indexEmail = email.indexOf('@');
+    const name = email.slice(0, indexEmail).slice(0, 9);
 
     const user = await User.create({
       email,
       password: hashedPassword,
       verificationToken,
+      userName: name,
     });
 
     const mail = createConfirmationMail(user.email, user.verificationToken);

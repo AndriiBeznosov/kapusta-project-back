@@ -11,7 +11,7 @@ const { auth } = require('../middlewares/auth');
 
 const userTransaction = express.Router();
 
-userTransaction.get('/all', auth, tryCatchWrapper(getTransactions));
+userTransaction.get('/operation', auth, tryCatchWrapper(getTransactions));
 userTransaction.post('/new', auth, tryCatchWrapper(newTransaction));
 userTransaction.delete('/delete/:id', auth, tryCatchWrapper(deleteTransaction));
 userTransaction.post('/summary', auth, tryCatchWrapper(summaryByMonth));
