@@ -15,12 +15,10 @@ const usersRouter = express.Router();
 
 usersRouter.post('/register', tryCatchWrapper(register));
 usersRouter.post('/login', tryCatchWrapper(login));
+usersRouter.get('/get-user', auth, tryCatchWrapper(getMe));
 usersRouter.patch('/logout', auth, tryCatchWrapper(logout));
 usersRouter.patch('/balance', auth, tryCatchWrapper(changeBalance));
 usersRouter.patch('/update-user', auth, tryCatchWrapper(updateUser));
-
-usersRouter.get('/me', auth, tryCatchWrapper(getMe));
-
 usersRouter.get('/verify/:verificationToken', tryCatchWrapper(verifyEmail));
 
 module.exports = usersRouter;

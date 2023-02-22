@@ -1,4 +1,5 @@
 const sendGridMail = require('@sendgrid/mail');
+const { HttpError } = require('../httpError');
 
 // set API key in the instance from env
 sendGridMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -13,9 +14,8 @@ const sendMail = async objConfig => {
 
   try {
     await sendGridMail.send(message);
-    console.log(`Mail sended success to ${message.to}`);
   } catch (error) {
-    console.log(error.message);
+    throw new HttpError('Do not verified email', 401);
   }
 };
 

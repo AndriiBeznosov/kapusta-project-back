@@ -4,14 +4,14 @@ const {
   deleteTransaction,
   informationPeriod,
   summaryByMonth,
-  posts,
+  getTransactions,
 } = require('../controllers/transactions');
 const { tryCatchWrapper } = require('../tryCatchWrapper/tryCatchWrapper');
 const { auth } = require('../middlewares/auth');
 
 const userTransaction = express.Router();
 
-userTransaction.get('/posts', tryCatchWrapper(posts));
+userTransaction.get('/all', auth, tryCatchWrapper(getTransactions));
 userTransaction.post('/new', auth, tryCatchWrapper(newTransaction));
 userTransaction.delete('/delete/:id', auth, tryCatchWrapper(deleteTransaction));
 userTransaction.post('/summary', auth, tryCatchWrapper(summaryByMonth));

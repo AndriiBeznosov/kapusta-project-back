@@ -63,13 +63,12 @@ const getSummary = async (id, operation) => {
   }
 };
 
-const getPosts = async () => {
+const getAllTransactions = async id => {
   try {
-    const posts = await Transaction.find();
-    // if (!posts.length) {
-    //   return { message: 'There is no data for this request' };
-    // }
-
+    const posts = await Transaction.find({ userId: id });
+    if (!posts.length) {
+      return { message: 'There is no data for this request', posts };
+    }
     return posts;
   } catch (error) {
     throw new HttpError(error.message, 404);
@@ -80,5 +79,5 @@ module.exports = {
   getSummary,
   addTransaction,
   getInformationPeriod,
-  getPosts,
+  getAllTransactions,
 };

@@ -2,7 +2,7 @@ const {
   addTransaction,
   getSummary,
   getInformationPeriod,
-  getPosts,
+  getAllTransactions,
 } = require('../services/transactions');
 
 const { Transaction } = require('../schemas/transactions');
@@ -45,6 +45,7 @@ const summaryByMonth = async (req, res) => {
     res.status(error.code).json({ message: error.message });
   }
 };
+
 const informationPeriod = async (req, res, next) => {
   try {
     const { _id } = req.user;
@@ -54,9 +55,10 @@ const informationPeriod = async (req, res, next) => {
   } catch (error) {}
 };
 
-const posts = async (req, res, next) => {
+const getTransactions = async (req, res, next) => {
   try {
-    const information = await getPosts();
+    const { _id } = req.user;
+    const information = await getAllTransactions(_id);
     res.status(200).json(information);
   } catch (error) {}
 };
@@ -66,5 +68,5 @@ module.exports = {
   deleteTransaction,
   summaryByMonth,
   informationPeriod,
-  posts,
+  getTransactions,
 };

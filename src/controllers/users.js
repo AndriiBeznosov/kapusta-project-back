@@ -4,7 +4,7 @@ const {
   logoutUser,
   addBalance,
   verifyUserEmail,
-  getAll,
+  getUser,
   update,
 } = require('../services/users');
 
@@ -64,8 +64,9 @@ const verifyEmail = async (req, res, _) => {
   const { verificationToken } = req.params;
 
   try {
-    await verifyUserEmail(verificationToken);
-    res.redirect('https://vplabunets.github.io/kapusta-project/');
+    const { token } = await verifyUserEmail(verificationToken);
+    console.log(token);
+    res.redirect(`https://vplabunets.github.io/kapusta-project?token=${token}`);
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
@@ -74,13 +75,14 @@ const verifyEmail = async (req, res, _) => {
 const getMe = async (req, res, _) => {
   const { id } = req.user;
   try {
-    const userInfo = await getAll(id);
+    const userInfo = await getUser(id);
     return res.status(201).json(userInfo);
   } catch (error) {
     console.warn(error);
     res.status(error.code).json({ message: error.message });
   }
 };
+
 const updateUser = async (req, res, _) => {
   const { id } = req.user;
   const { userName, avatarUrl } = req.body;
