@@ -55,7 +55,7 @@ const summaryByMonth = async (req, res) => {
     const { operation } = req.body;
     const { id } = req.user;
     const transaction = await getSummary(id, operation);
-    res.status(201).json({ transaction });
+    res.status(201).json(transaction);
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
