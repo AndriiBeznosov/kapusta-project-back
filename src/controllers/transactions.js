@@ -7,7 +7,7 @@ const {
 
 const { Transaction } = require('../schemas/transactions');
 
-const transaction = async (req, res, _) => {
+const newTransaction = async (req, res, _) => {
   try {
     const operation = await addTransaction(req.body, req.user._id);
     return res.status(201).json({ data: operation });
@@ -24,7 +24,6 @@ const deleteTransaction = async (req, res, next) => {
 
     if (!result) {
       return res.status(404).json({
-        status: 'error',
         message: 'Id of transaction not found',
       });
     }
@@ -50,20 +49,20 @@ const informationPeriod = async (req, res, next) => {
   try {
     const { _id } = req.user;
     const { year, month } = req.body;
-    const informations = await getInformationPeriod(_id, year, month);
-    res.status(200).json(informations);
+    const information = await getInformationPeriod(_id, year, month);
+    res.status(200).json(information);
   } catch (error) {}
 };
 
 const posts = async (req, res, next) => {
   try {
-    const informations = await getPosts();
-    res.status(200).json(informations);
+    const information = await getPosts();
+    res.status(200).json(information);
   } catch (error) {}
 };
 
 module.exports = {
-  transaction,
+  newTransaction,
   deleteTransaction,
   summaryByMonth,
   informationPeriod,

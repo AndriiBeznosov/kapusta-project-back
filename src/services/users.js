@@ -16,12 +16,11 @@ const { sendMail } = require('../helpers/sendMail');
 
 const addUser = async (email, password) => {
   try {
-    // hash паролю
     const salt = await bcryptjs.genSalt();
     const hashedPassword = await bcryptjs.hash(password, salt);
-    // створення токену верифікації імейлу
+
     const verificationToken = createVerificationToken();
-    // створення користувача
+
     const user = await User.create({
       email,
       password: hashedPassword,
@@ -159,9 +158,9 @@ const update = async (id, userName, avatarUrl) => {
     if (!user) {
       throw new HttpError('Invalid email address or password', 401);
     }
-    const udatePost = await User.findById(id);
+    const updatePost = await User.findById(id);
 
-    return udatePost;
+    return updatePost;
   } catch (error) {}
 };
 
