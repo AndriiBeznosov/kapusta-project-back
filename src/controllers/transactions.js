@@ -54,9 +54,8 @@ const summaryByMonth = async (req, res) => {
   try {
     const { operation } = req.body;
     const { id } = req.user;
-    console.log(id);
     const transaction = await getSummary(id, operation);
-    res.status(200).json({ transaction });
+    res.status(201).json({ transaction });
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
@@ -78,7 +77,7 @@ const getTransactions = async (req, res, next) => {
     const { id } = req.user;
     const { operation } = req.body;
     const information = await getAllTransactionsByOperation(id, operation);
-    res.status(200).json(information);
+    res.status(201).json(information);
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
