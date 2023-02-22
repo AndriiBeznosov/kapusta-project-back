@@ -5,6 +5,7 @@ const {
   addBalance,
   verifyUserEmail,
   getAll,
+  update,
 } = require('../services/users');
 
 const register = async (req, res, _) => {
@@ -80,6 +81,17 @@ const getMe = async (req, res, _) => {
     res.status(error.code).json({ message: error.message });
   }
 };
+const updateUser = async (req, res, _) => {
+  const { id } = req.user;
+  const { userName, avatarUrl } = req.body;
+  try {
+    const updateUser = await update(id, userName, avatarUrl);
+    return res.status(201).json(updateUser);
+  } catch (error) {
+    console.warn(error);
+    res.status(error.code).json({ message: error.message });
+  }
+};
 
 module.exports = {
   register,
@@ -88,4 +100,5 @@ module.exports = {
   changeBalance,
   verifyEmail,
   getMe,
+  updateUser,
 };

@@ -149,6 +149,22 @@ const getAll = async id => {
   } catch (error) {}
 };
 
+const update = async (id, userName, avatarUrl) => {
+  try {
+    const user = await User.updateOne(
+      { _id: id },
+      { userName, avatarUrl },
+      { new: true }
+    );
+    if (!user) {
+      throw new HttpError('Invalid email address or password', 401);
+    }
+    const udatePost = await User.findById(id);
+
+    return udatePost;
+  } catch (error) {}
+};
+
 module.exports = {
   addUser,
   loginUser,
@@ -156,4 +172,5 @@ module.exports = {
   addBalance,
   verifyUserEmail,
   getAll,
+  update,
 };
