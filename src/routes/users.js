@@ -15,7 +15,7 @@ const usersRouter = express.Router();
 
 usersRouter.post('/register', tryCatchWrapper(register));
 usersRouter.post('/login', tryCatchWrapper(login));
-usersRouter.post('/get-user', auth, tryCatchWrapper(getMe));
+usersRouter.get('/get-user', auth, tryCatchWrapper(getMe));
 usersRouter.patch('/logout', auth, tryCatchWrapper(logout));
 usersRouter.patch('/balance', auth, tryCatchWrapper(changeBalance));
 usersRouter.patch('/update-user', auth, tryCatchWrapper(updateUser));
