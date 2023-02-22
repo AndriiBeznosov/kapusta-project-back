@@ -18,9 +18,8 @@ const register = async (req, res, _) => {
         .json('password should be at least 6 characters long');
     }
     const user = await addUser(email, password);
-    return res.status(201).json({ user: user });
+    return res.status(201).json(user);
   } catch (error) {
-    console.warn(error);
     res.status(error.code).json({ message: error.message });
   }
 };
@@ -31,7 +30,6 @@ const login = async (req, res, _) => {
     const user = await loginUser(email, password);
     return res.json(user);
   } catch (error) {
-    console.warn(error);
     res.status(error.code).json({ message: error.message });
   }
 };
@@ -42,7 +40,6 @@ const logout = async (req, res, _) => {
     await logoutUser(id);
     return res.status(201).json({ message: 'The exit was successful' });
   } catch (error) {
-    console.warn(error);
     res.status(error.code).json({ message: error.message });
   }
 };
@@ -55,7 +52,6 @@ const changeBalance = async (req, res, _) => {
     await addBalance(id, balance);
     return res.status(201).json({ message: 'The exit was successful' });
   } catch (error) {
-    console.warn(error);
     res.status(error.code).json({ message: error.message });
   }
 };
@@ -78,7 +74,6 @@ const getMe = async (req, res, _) => {
     const userInfo = await getUser(id);
     return res.status(201).json(userInfo);
   } catch (error) {
-    console.warn(error);
     res.status(error.code).json({ message: error.message });
   }
 };
@@ -90,7 +85,6 @@ const updateUser = async (req, res, _) => {
     const updateUser = await update(id, userName, avatarUrl);
     return res.status(201).json(updateUser);
   } catch (error) {
-    console.warn(error);
     res.status(error.code).json({ message: error.message });
   }
 };

@@ -1,6 +1,6 @@
 const createConfirmationMail = (userEmail, verificationToken) => {
   const mail = {
-    to: userEmail,
+    toцйцй: userEmail,
     subject: 'Kapusta app. Link to confirm your email',
     html: `
     <h3>Our congratulations! You have successfully registered in the Kapusta app!</h3>

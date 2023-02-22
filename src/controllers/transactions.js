@@ -3,12 +3,12 @@ const {
   getSummary,
   getInformationPeriod,
   getAllTransactionsByOperation,
+  transactionDelete,
 } = require('../services/transactions');
 
 const {
   updateUserBalance,
 } = require('../services/transactionServices/updateUserBalance');
-const { Transaction } = require('../schemas/transactions');
 
 const newTransaction = async (req, res, _) => {
   try {
@@ -27,7 +27,6 @@ const newTransaction = async (req, res, _) => {
       .status(201)
       .json({ data: transaction, user: { balance: updatedUserBalance } });
   } catch (error) {
-    console.warn(error);
     res.status(error.code).json({ message: error.message });
   }
 };
@@ -35,18 +34,18 @@ const newTransaction = async (req, res, _) => {
 const deleteTransaction = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const result = await Transaction.findByIdAndRemove({ _id: id });
+    const transaction = await transactionDelete(id);
 
-    if (!result) {
-      return res.status(404).json({
-        message: 'Id of transaction not found',
-      });
-    }
+    // Getting parameters for updating user balance
+    const { userId, operation: operationType, sum: operationSum } = transaction;
+    // Update user balance in DB
+    await updateUserBalance(userId, operationType, operationSum);
+
     res.status(200).json({
       message: 'Your transaction was deleted!',
     });
   } catch (error) {
-    next();
+    res.status(error.code).json({ message: error.message });
   }
 };
 

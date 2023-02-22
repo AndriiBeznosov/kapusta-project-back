@@ -47,7 +47,6 @@ const googleRedirect = async (req, res) => {
   // Get user data from google
   const { data: userData } = await getUserData(tokenData.data.access_token);
   const { email, verified_email: verifiedGoogleEmail } = userData;
-  // console.log('userData =>', userData);
 
   // TODO
   // Check is exists user email from google in DB
