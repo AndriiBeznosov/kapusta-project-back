@@ -5,22 +5,30 @@ const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { HttpError } = require('../httpError');
 const { User } = require('../schemas/users');
-
 const {
   createVerificationToken,
 } = require('../helpers/createVerificationToken');
-
-const { createConfirmationMail } = require('../helpers/createMail');
-const { sendMail } = require('../helpers/sendMail');
+const { createName } = require('../helpers/createName');
+const {
+  sendMailConfirmationMail,
+} = require('../helpers/createConfirmationMail');
 
 const addUser = async (email, password) => {
   try {
+    const checkUser = await User.findOne({ email });
+
+    if (checkUser && !checkUser.verify) {
+      await sendMailConfirmationMail(checkUser);
+      throw new HttpError(
+        `You are re-registering, a letter was sent to your email "${email}", please confirm your email`,
+        409
+      );
+    }
     const salt = await bcryptjs.genSalt();
     const hashedPassword = await bcryptjs.hash(password, salt);
 
     const verificationToken = createVerificationToken();
-    const indexEmail = email.indexOf('@');
-    const name = email.slice(0, indexEmail).slice(0, 9);
+    const name = createName(email);
 
     const user = await User.create({
       email,
@@ -29,24 +37,20 @@ const addUser = async (email, password) => {
       userName: name,
     });
 
-    const mail = createConfirmationMail(user.email, user.verificationToken);
-    await sendMail(mail);
+    await sendMailConfirmationMail(user);
 
     return {
       message: `User registration was successful, a verification email ${user.email} was sent to you`,
     };
   } catch (error) {
-    console.warn(error.message);
     if (error.message.includes('E11000 duplicate key error')) {
-      throw new HttpError(
-        'The email is already taken by another user, try logging in ',
-        409
-      );
+      throw new HttpError('A user already exists under such a mail', 409);
     }
 
     throw new HttpError(error.message, 404);
   }
 };
+
 const loginUser = async (email, password) => {
   try {
     const user = await User.findOne({ email });
@@ -61,9 +65,8 @@ const loginUser = async (email, password) => {
     }
 
     if (!user.verify) {
-      const mail = createConfirmationMail(user.email, user.verificationToken);
-      await sendMail(mail);
-      return { message: `Please confirm the mail ${email}` };
+      await sendMailConfirmationMail(user);
+      throw new HttpError(`Please confirm the mail ${email}`, 401);
     }
     const { _id: userId } = user;
     const payload = { id: userId };
@@ -156,7 +159,9 @@ const getUser = async id => {
       verificationToken,
       verify,
     };
-  } catch (error) {}
+  } catch (error) {
+    throw new HttpError(error.message, error.code);
+  }
 };
 
 const update = async (id, userName, avatarUrl) => {
@@ -172,7 +177,9 @@ const update = async (id, userName, avatarUrl) => {
     const updatePost = await User.findById(id);
 
     return updatePost;
-  } catch (error) {}
+  } catch (error) {
+    throw new HttpError(error.message, error.code);
+  }
 };
 
 module.exports = {

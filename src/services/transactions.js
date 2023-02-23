@@ -10,6 +10,7 @@ const addTransaction = async (data, id) => {
     throw new HttpError(error.message, 404);
   }
 };
+
 const getInformationPeriod = async (id, year, month) => {
   try {
     const transactions = await Transaction.find({
@@ -71,9 +72,23 @@ const getAllTransactionsByOperation = async (id, operation) => {
   }
 };
 
+const transactionDelete = async id => {
+  try {
+    const transaction = await Transaction.findByIdAndRemove({ _id: id });
+
+    if (!transaction) {
+      throw new HttpError(`Transaction with id does not exist`, 404);
+    }
+    return transaction;
+  } catch (error) {
+    throw new HttpError(error.message, 404);
+  }
+};
+
 module.exports = {
   getSummary,
   addTransaction,
   getInformationPeriod,
   getAllTransactionsByOperation,
+  transactionDelete,
 };
