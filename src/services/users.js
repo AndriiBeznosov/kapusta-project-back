@@ -19,10 +19,10 @@ const { nanoid } = require('nanoid');
 const addUser = async (email, password) => {
   try {
     const emailCheck = email.toLowerCase();
-    const checkUser = await User.findOne({ emailCheck });
+    const checkUser = await User.findOne({ email: emailCheck });
 
     if (checkUser && !checkUser.verify) {
-      await sendMailConfirmationMail(checkUser);
+      sendMailConfirmationMail(checkUser);
       throw new HttpError('Email is not verified, but already registered', 409);
     }
     if (checkUser && checkUser.verify) {
@@ -47,11 +47,7 @@ const addUser = async (email, password) => {
       message: `User registration was successful, a verification email ${user.email} was sent to you`,
     };
   } catch (error) {
-    if (error.message.includes('E11000 duplicate key error')) {
-      throw new HttpError('Email verified, and already registered', 409);
-    }
-
-    throw new HttpError(error.message, 404);
+    throw new HttpError(error.message, error.code);
   }
 };
 
