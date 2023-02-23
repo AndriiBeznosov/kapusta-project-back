@@ -66,7 +66,7 @@ const loginUser = async (email, password) => {
 
     if (!user.verify) {
       await sendMailConfirmationMail(user);
-      return { message: `Please confirm the mail ${email}` };
+      throw new HttpError(`Please confirm the mail ${email}`, 401);
     }
     const { _id: userId } = user;
     const payload = { id: userId };
