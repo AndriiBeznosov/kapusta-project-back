@@ -50,8 +50,8 @@ const changeBalance = async (req, res, _) => {
   const { balance } = req.body;
 
   try {
-    await addBalance(id, balance);
-    return res.status(201).json({ message: 'The exit was successful' });
+    const result = await addBalance(id, balance);
+    return res.status(201).json({ balance: result.balance });
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }

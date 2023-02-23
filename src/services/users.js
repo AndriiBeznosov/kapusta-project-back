@@ -112,7 +112,12 @@ const addBalance = async (id, balance) => {
     throw new HttpError('Not valid balance', 400);
   }
   try {
-    await User.findByIdAndUpdate(id, { balance }, { new: true });
+    const resultBalance = await User.findByIdAndUpdate(
+      id,
+      { balance },
+      { new: true }
+    );
+    return resultBalance;
   } catch (error) {
     throw new HttpError(error.message, 404);
   }
