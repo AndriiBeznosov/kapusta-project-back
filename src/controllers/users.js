@@ -6,6 +6,7 @@ const {
   verifyUserEmail,
   getUser,
   update,
+  updatePassword,
 } = require('../services/users');
 
 const register = async (req, res, _) => {
@@ -89,6 +90,18 @@ const updateUser = async (req, res, _) => {
   }
 };
 
+const refreshPessword = async (req, res, _) => {
+  const { email } = req.body;
+  try {
+    await updatePassword(email);
+    return res
+      .status(201)
+      .json({ message: 'Password recovery email was successful !' });
+  } catch (error) {
+    res.status(error.code).json({ message: error.message });
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -97,4 +110,5 @@ module.exports = {
   verifyEmail,
   getMe,
   updateUser,
+  refreshPessword,
 };

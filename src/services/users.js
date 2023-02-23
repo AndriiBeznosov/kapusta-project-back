@@ -11,7 +11,9 @@ const {
 const { createName } = require('../helpers/createName');
 const {
   sendMailConfirmationMail,
+  SendMailUpdatingPassword,
 } = require('../helpers/createConfirmationMail');
+const { nanoid } = require('nanoid');
 
 const addUser = async (email, password) => {
   try {
@@ -182,6 +184,37 @@ const update = async (id, userName, avatarUrl) => {
   }
 };
 
+const updatePassword = async email => {
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new HttpError(
+        `User with this email '${email}' is not in the database. Please register`,
+        409
+      );
+    }
+    const password = nanoid();
+    const salt = await bcryptjs.genSalt();
+    const hashedPassword = await bcryptjs.hash(password, salt);
+    const userUpdate = await User.findOneAndUpdate(
+      { email },
+      { password: hashedPassword },
+      { new: true }
+    );
+
+    if (!userUpdate.verify) {
+      await sendMailConfirmationMail(userUpdate);
+      throw new HttpError(`Please confirm the mail ${email} by verifying`, 401);
+    }
+
+    await SendMailUpdatingPassword(email, password);
+
+    return userUpdate.token;
+  } catch (error) {
+    throw new HttpError(error.message, error.code);
+  }
+};
+
 module.exports = {
   addUser,
   loginUser,
@@ -190,4 +223,5 @@ module.exports = {
   verifyUserEmail,
   getUser,
   update,
+  updatePassword,
 };

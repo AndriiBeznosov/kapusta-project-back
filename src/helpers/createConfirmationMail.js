@@ -1,5 +1,8 @@
 const { HttpError } = require('../httpError');
-const { createConfirmationMail } = require('../helpers/createMail');
+const {
+  createConfirmationMail,
+  passwordUpdateEmail,
+} = require('../helpers/createMail');
 const { sendMail } = require('../helpers/sendMail');
 
 const sendMailConfirmationMail = async user => {
@@ -14,6 +17,16 @@ const sendMailConfirmationMail = async user => {
   }
 };
 
+const SendMailUpdatingPassword = async (email, password) => {
+  try {
+    const mail = await passwordUpdateEmail(email, password);
+    await sendMail(mail);
+  } catch (error) {
+    throw new HttpError('Sending a letter did not pass verification', 404);
+  }
+};
+
 module.exports = {
   sendMailConfirmationMail,
+  SendMailUpdatingPassword,
 };
