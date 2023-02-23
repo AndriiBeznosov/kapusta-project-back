@@ -17,14 +17,15 @@ const { nanoid } = require('nanoid');
 
 const addUser = async (email, password) => {
   try {
-    const checkUser = await User.findOne({ email });
+    const emailCheck = email.toLowerCase();
+    const checkUser = await User.findOne({ emailCheck });
 
     if (checkUser && !checkUser.verify) {
       await sendMailConfirmationMail(checkUser);
-      throw new HttpError(
-        `You are re-registering, a letter was sent to your email "${email}", please confirm your email`,
-        409
-      );
+      throw new HttpError('Email is not verified, but already registered', 409);
+    }
+    if (checkUser && checkUser.verify) {
+      throw new HttpError(`Email verified, and already registered`, 409);
     }
     const salt = await bcryptjs.genSalt();
     const hashedPassword = await bcryptjs.hash(password, salt);
@@ -33,7 +34,7 @@ const addUser = async (email, password) => {
     const name = createName(email);
 
     const user = await User.create({
-      email,
+      email: emailCheck,
       password: hashedPassword,
       verificationToken,
       userName: name,
@@ -55,7 +56,8 @@ const addUser = async (email, password) => {
 
 const loginUser = async (email, password) => {
   try {
-    const user = await User.findOne({ email });
+    const emailCheck = email.toLowerCase();
+    const user = await User.findOne({ email: emailCheck });
 
     if (!user) {
       throw new HttpError('Invalid email address or password', 401);
@@ -186,7 +188,8 @@ const update = async (id, userName, avatarUrl) => {
 
 const updatePassword = async email => {
   try {
-    const user = await User.findOne({ email });
+    const emailCheck = email.toLowerCase();
+    const user = await User.findOne({ email: emailCheck });
     if (!user) {
       throw new HttpError(
         `User with this email '${email}' is not in the database. Please register`,
