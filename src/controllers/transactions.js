@@ -41,9 +41,7 @@ const deleteTransaction = async (req, res, next) => {
     // Update user balance in DB
     await updateUserBalance(userId, operationType, operationSum);
 
-    res.status(200).json({
-      message: 'Your transaction was deleted!',
-    });
+    res.status(200).json(transaction);
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
