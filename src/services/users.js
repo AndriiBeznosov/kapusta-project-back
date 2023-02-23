@@ -3,6 +3,7 @@ const { JWT_SECRET } = process.env;
 
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+
 const { HttpError } = require('../httpError');
 const { User } = require('../schemas/users');
 const {
