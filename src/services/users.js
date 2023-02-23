@@ -47,9 +47,9 @@ const addUser = async (email, password) => {
       message: `User registration was successful, a verification email ${user.email} was sent to you`,
     };
   } catch (error) {
-    if (error.message.includes('E11000 duplicate key error')) {
-      throw new HttpError('A user already exists under such a mail', 409);
-    }
+    // if (error.message.includes('E11000 duplicate key error')) {
+    //   throw new HttpError('A user already exists under such a mail', 409);
+    // }
 
     throw new HttpError(error.message, 404);
   }
