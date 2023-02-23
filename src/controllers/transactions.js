@@ -8,6 +8,7 @@ const {
 
 const {
   updateUserBalance,
+  updateUserBalanceAfterDelete,
 } = require('../services/transactionServices/updateUserBalance');
 
 const newTransaction = async (req, res, _) => {
@@ -39,9 +40,15 @@ const deleteTransaction = async (req, res, next) => {
     // Getting parameters for updating user balance
     const { userId, operation: operationType, sum: operationSum } = transaction;
     // Update user balance in DB
-    await updateUserBalance(userId, operationType, operationSum);
+    const updateBalance = await updateUserBalanceAfterDelete(
+      userId,
+      operationType,
+      operationSum
+    );
 
-    res.status(200).json(transaction);
+    res
+      .status(200)
+      .json({ id: transaction._id, user: { balance: updateBalance } });
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }

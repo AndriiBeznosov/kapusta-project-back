@@ -35,6 +35,43 @@ const updateUserBalance = async (userId, operationType, operationSum) => {
   }
 };
 
+// update user's balance after delete
+const updateUserBalanceAfterDelete = async (
+  userId,
+  operationType,
+  operationSum
+) => {
+  try {
+    const user = await User.findById(userId);
+    let userBalance = user.balance;
+
+    switch (operationType) {
+      case 'income':
+        userBalance -= operationSum;
+        break;
+      case 'expenses':
+        userBalance += operationSum;
+        break;
+      default:
+        break;
+    }
+
+    const { balance: updatedUserBalance } = await User.findByIdAndUpdate(
+      userId,
+      { balance: userBalance },
+      { new: true }
+    );
+
+    return updatedUserBalance;
+  } catch (error) {
+    return {
+      message: 'Something went wrong in the user balance calculation',
+      error,
+    };
+  }
+};
+
 module.exports = {
   updateUserBalance,
+  updateUserBalanceAfterDelete,
 };

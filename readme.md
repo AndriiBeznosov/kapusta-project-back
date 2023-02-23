@@ -18,8 +18,8 @@ and@and.com was sent to you"}
 відправлене посилання для верифікації, потрібно перейти в пошту та пройти
 верифікацію.
 
-Після верифікацію з пошти відбувається rerender на сторінуку
-`https://vplabunets.github.io/kapusta-project/`
+Після верифікацію з пошти відбувається rerender на сторінку
+`https://eimanager.netlify.app/`
 
 Потрібно пройти login
 
@@ -49,11 +49,15 @@ and@and.com was sent to you"}
 
   ## GET Отримання інформації по user
 
-  id дістається з localStorage
+  Потрібно передати: {\_id: ....}
 
-  - `https://kapusta-project-back-production.up.railway.app/api/users/me`
+  - `https://kapusta-project-back-production.up.railway.app/api/users/get-user`
 
-  Відповідь, вся інформація яка стосується по User
+  Відповідь: { "token":
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzZjY0N2U3ZWNkMzEwNDNhMTRiZTA1YSIsImlhdCI6MTY3NzE1MjIyMCwiZXhwIjoxNjc5NzQ0MjIwfQ.7dI9DdYRwVTcrhQhJg_VFB2fjIfP5AZW3uqzxmcDXEw",
+  "\_id": "63f647e7ecd31043a14be05a", "email": "andrey301288@gmail.com",
+  "userName": "andrey301", "avatarUrl": "", "balance": 100000,
+  "verificationToken": null, "verify": true }
 
 ## GET Верифікація користувача (відбувається через пошту)
 
@@ -73,9 +77,48 @@ and@and.com was sent to you"}
 - instance.interceptors.request.use((config) => { config.headers.Authorization =
   window.localStorage.getItem("token"); return config; });
 
-- `https://kapusta-project-back-production.up.railway.app/api/users/balance/verify/:verificationToken`
+- `https://kapusta-project-back-production.up.railway.app/api/users/verify/:verificationToken`
+
+## POST Завантаження фото
+
+Потрібно передати image
+`https://kapusta-project-back-production.up.railway.app/upload` Відповідь: {
+"url": "/uploads/IMG_6976.png" }
+
+## PATCH Оновлення даних по користувачу
+
+Можна оновити: {userName:...., avatarUrl:......}
+
+- `https://kapusta-project-back-production.up.railway.app/api/users/update-user`
+
+Відповідь: Карточка User
+
+## GET Забув пароль
+
+Потрібно передати: {email: .......}
+
+- `https://kapusta-project-back-production.up.railway.app/api/users/update-user`
+
+Відповідь:
+
+1. 201 { "message": "Password recovery email was successful !" }
+
+- Буде відправлено новий згенерований пароль на пошту
+
+2. 409 { "message": "User with this email 'andrey301288@gmail.co' is not in the
+   database. Please register" }
+3. 401 { "message": "Please confirm the mail and@gmail.com by verifying" }
 
 ## Transaction /api/transaction ----------------
+
+## POST Отримати транзакції
+
+Потрібно передати вид транзакціям {operation: "income"} або {operation:
+"expenses"}
+
+- `https://kapusta-project-back-production.up.railway.app/api/transaction/new`
+
+Відповідь: [{},{},{}]
 
 ## POST Проведення транзакції по користувачу
 
@@ -83,7 +126,7 @@ and@and.com was sent to you"}
 "date": "17.02.2023", "month": "February", "year":"2023", "category":"Other",
 "sum":"5000", "currency":"UAH" }"
 
-- `https://kapusta-project-back-production.up.railway.app/api/transaction/`
+- `https://kapusta-project-back-production.up.railway.app/api/transaction/new`
 
 Відповідь: { "data": { "operation": "expenses", "description": "Купівля поні 2",
 "category": "Other", "sum": "5000", "date": "17.02.2023", "month": "February",
@@ -117,7 +160,8 @@ and@and.com was sent to you"}
 
 - `https://kapusta-project-back-production.up.railway.app/api/transaction/delete/${< id-транзакції>}`
 
-Відповідь успішної операції: { "message": "Your transaction was deleted!" }
+Відповідь успішної операції: { "id": "63f78fd91fcc9d9cf934d633", "user": {
+"balance": 100000 } }
 
 ### Команди:
 
