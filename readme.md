@@ -97,7 +97,7 @@ and@and.com was sent to you"}
 
 Потрібно передати: {email: .......}
 
-- `https://kapusta-project-back-production.up.railway.app/api/users/update-user`
+- `https://kapusta-project-back-production.up.railway.app/api/users/refresh-password`
 
 Відповідь:
 
