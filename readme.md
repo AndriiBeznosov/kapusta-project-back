@@ -81,7 +81,7 @@ refreshToken Його краще обробити й записати в localSt
 
 - `https://kapusta-project-back-production.up.railway.app/api/users/verify/:verificationToken`
 
-коли проходите верифікацію, створюється пара токенів й передаеться в параметрах
+коли проходите верифікацію, створюється пара токенів й передається в параметрах
 як refreshToken та accessToken
 
 ## POST Завантаження фото
@@ -99,7 +99,7 @@ refreshToken Його краще обробити й записати в localSt
 
 Відповідь: Карточка User
 
-## GET Забув пароль
+## POST Забув пароль
 
 Потрібно передати: {email: .......}
 
@@ -140,6 +140,17 @@ refreshToken Його краще обробити й записати в localSt
 "63f915ddd03434efdbb4953c", "createdAt": "2023-02-24T19:54:05.719Z",
 "updatedAt": "2023-02-24T19:54:05.719Z" }, "user": { "balance": -32000 } }
 
+## DELETE Видалення транзакції
+
+Потрібно передати id транзакції
+
+- `https://kapusta-project-back-production.up.railway.app/api/transaction/delete/${< id-транзакції>}`
+
+Автоматично змінюється баланс в користувача й записується в карточку
+
+Відповідь успішної операції: { "id": "63f78fd91fcc9d9cf934d633", "user": {
+"balance": 100000 } }
+
 ## POST Отримати інформації по транзакціях за поточний рік по кожному місяцю
 
 потрібно передати вид транзакціям {operation: "income"} або {operation:
@@ -149,8 +160,7 @@ refreshToken Його краще обробити й записати в localSt
 
 Відповідь:
 
-- { "transaction": [ { "month": "February", "sum": 510000 }, { "month":
-  "January", "sum": 600000 } ] }
+- [ { "month": "March", "sum": 163000, "monthNumber": 0.2 } ]
 
 ## GET Отримати інформацію по транзакціях за період
 
@@ -160,14 +170,30 @@ refreshToken Його краще обробити й записати в localSt
 
 Відповідь: Повертає масив всіх транзакції
 
-## DELETE Видалення транзакції
+## POST -----------------
 
-Потрібно передати id транзакції
+Потрібно передати: { month, year, operation }
 
-- `https://kapusta-project-back-production.up.railway.app/api/transaction/delete/${< id-транзакції>}`
+- `https://kapusta-project-back-production.up.railway.app/api/transaction/all-summary-reports`
 
-Відповідь успішної операції: { "id": "63f78fd91fcc9d9cf934d633", "user": {
-"balance": 100000 } }
+Відповідь: [ { "operation": "expenses", "sum": 96000 }, { "operation": "income",
+"sum": 96000 } ]
+
+## POST -----------------
+
+Потрібно передати: { month, year, operation }
+
+- `https://kapusta-project-back-production.up.railway.app/api/transaction/category-reports`
+
+Відповідь: [ { "category": "Other", "sum": 96000 } ]
+
+## POST -----------------
+
+Потрібно передати: { month, year, operation, category }
+
+- `https://kapusta-project-back-production.up.railway.app/api/transaction/items-category-reports`
+
+Відповідь: [ { "category": "Other", "sum": 96000 } ]
 
 ### Команди:
 
@@ -177,7 +203,3 @@ refreshToken Його краще обробити й записати в localSt
   виконувати перед кожним PR та виправляти всі помилки лінтера
 - `npm lint:fix` &mdash; та ж перевірка лінтера, але з автоматичними
   виправленнями простих помилок
-
-- запит повертає масив обьектів транзакціям <operation: "income",> та
-  <operation: "expenses"> для отримання актуальної інфомації обовязково потрібно
-  передавати токен usera
