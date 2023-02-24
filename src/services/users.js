@@ -247,31 +247,6 @@ const refreshTokenService = async verifiableToken => {
   }
 };
 
-const refreshTokenService = async verifiableToken => {
-  try {
-    const { id } = jwt.verify(verifiableToken, REFRESH_SECRET);
-    const checkTokenInDb = await User.findOne({
-      refreshToken: verifiableToken,
-    });
-
-    if (!checkTokenInDb) {
-      throw new HttpError('invalid token', 403);
-    }
-
-    const { accessToken, refreshToken } = tokensCreator(id);
-
-    await User.findByIdAndUpdate(
-      id,
-      { accessToken, refreshToken },
-      { new: true }
-    );
-
-    return { accessToken, refreshToken };
-  } catch (error) {
-    throw new HttpError(error.message, 403);
-  }
-};
-
 module.exports = {
   addUser,
   loginUser,

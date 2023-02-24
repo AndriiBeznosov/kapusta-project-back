@@ -121,33 +121,6 @@ const refreshTokenController = async (req, res, next) => {
   }
 };
 
-const refreshPessword = async (req, res, _) => {
-  const { email } = req.body;
-  try {
-    await updatePassword(email);
-    return res
-      .status(201)
-      .json({ message: 'Password recovery email was successful !' });
-  } catch (error) {
-    res.status(error.code).json({ message: error.message });
-  }
-};
-
-const refreshTokenController = async (req, res, next) => {
-  const { refreshToken: receivedToken } = req.body;
-
-  try {
-    const { accessToken, refreshToken } = await refreshTokenService(
-      receivedToken
-    );
-
-    res.status(201).json({ accessToken, refreshToken });
-  } catch (error) {
-    console.warn(error);
-    res.status(error.code).json({ message: error.message });
-  }
-};
-
 module.exports = {
   register,
   login,
