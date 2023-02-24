@@ -66,6 +66,37 @@ const getSummary = async (id, operation) => {
   }
 };
 
+const getAllSummaryReports = async (id, month, year) => {
+  try {
+    const transactions = await Transaction.find({
+      userId: id,
+      year,
+      month,
+    });
+
+    const result = transactions.reduce((acc, itm) => {
+      if (Object.keys(acc).includes(itm.operation)) {
+        acc[itm.operation] = +acc[itm.operation] + +itm.sum;
+        return acc;
+      }
+      acc[itm.operation] = itm.sum;
+      return acc;
+    }, {});
+
+    const newRes = [...Object.entries(result)];
+    const arrNew = newRes.map((itm, idx) => {
+      const trans = {
+        operation: itm[0],
+        sum: itm[1],
+      };
+      return trans;
+    });
+    return arrNew;
+  } catch (error) {
+    throw new HttpError(error.message, 404);
+  }
+};
+
 const getAllTransactionsByOperation = async (id, operation) => {
   try {
     const transactions = await Transaction.find({ userId: id, operation });
@@ -91,6 +122,7 @@ const transactionDelete = async id => {
 
 module.exports = {
   getSummary,
+  getAllSummaryReports,
   addTransaction,
   getInformationPeriod,
   getAllTransactionsByOperation,
