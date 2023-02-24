@@ -6,6 +6,7 @@ const {
   verifyUserEmail,
   getUser,
   update,
+  refreshTokenService,
 } = require('../services/users');
 
 const register = async (req, res, _) => {
@@ -53,20 +54,24 @@ const changeBalance = async (req, res, _) => {
 
   try {
     await addBalance(id, balance);
-    return res.status(201).json({ message: 'The exit was successful' });
+    return res.status(201).json({ message: 'Balance changed successfully' });
   } catch (error) {
     console.warn(error);
     res.status(error.code).json({ message: error.message });
   }
 };
 
-const verifyEmail = async (req, res, _) => {
+const verifyEmail = async (req, res) => {
   const { verificationToken } = req.params;
 
   try {
-    await verifyUserEmail(verificationToken);
+    const { accessToken, refreshToken } = await verifyUserEmail(
+      verificationToken
+    );
 
-    res.redirect(`https://vplabunets.github.io/kapusta-project`);
+    res.redirect(
+      `https://vplabunets.github.io/kapusta-project?accessToken=${accessToken}&refreshToken=${refreshToken}`
+    );
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
@@ -95,6 +100,21 @@ const updateUser = async (req, res, _) => {
   }
 };
 
+const refreshTokenController = async (req, res, next) => {
+  const { refreshToken: receivedToken } = req.body;
+
+  try {
+    const { accessToken, refreshToken } = await refreshTokenService(
+      receivedToken
+    );
+
+    res.status(201).json({ accessToken, refreshToken });
+  } catch (error) {
+    console.warn(error);
+    res.status(error.code).json({ message: error.message });
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -103,4 +123,5 @@ module.exports = {
   verifyEmail,
   getMe,
   updateUser,
+  refreshTokenController,
 };

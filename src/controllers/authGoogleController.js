@@ -2,7 +2,6 @@
 const queryString = require('query-string');
 const { nanoid } = require('nanoid');
 const bcryptjs = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 
 const { User } = require('../schemas/users');
 const { loginUser } = require('../services/users');
@@ -10,11 +9,11 @@ const { createLoginInfoMail } = require('../helpers/createMail');
 const { sendMail } = require('../helpers/sendMail');
 
 // Get environment variable
-const { BASE_URL, GOOGLE_CLIENT_ID, FRONTEND_URL, JWT_SECRET } = process.env;
+const { BASE_URL, GOOGLE_CLIENT_ID, FRONTEND_URL } = process.env;
 
 const { getGoogleToken } = require('../services/getGoogleToken');
 const { getUserData } = require('../services/getUserData');
-
+const { tokensCreator } = require('../services/tokensCreator');
 const googleAuth = async (req, res) => {
   // Created a query parameter string from an Object
   const stringifiedParams = queryString.stringify({
@@ -79,31 +78,38 @@ const googleRedirect = async (req, res) => {
     const mail = createLoginInfoMail(email, createdPassword);
     await sendMail(mail);
 
-    const user = await loginUser(email, createdPassword);
+    const { accessToken, refreshToken } = await loginUser(
+      email,
+      createdPassword
+    );
 
-    return res.redirect(`${FRONTEND_URL}/google-redirect?token=${user.token}`);
+    // Redirect on front-end vs tokens
+    return res.redirect(
+      `${FRONTEND_URL}/google-redirect?accessToken=${accessToken}&refreshToken=${refreshToken}`
+    );
   }
 
-  // User already exists. Creating access and refresh tokens and redirecting on the front-end rout
-  const accessToken = jwt.sign({ id: user._id }, JWT_SECRET, {
-    expiresIn: '1h',
-  });
+  // User already exists. Creating access and refresh tokens
+  // const payload = { id: user._id };
+  // const accessToken = jwt.sign(payload, ACCESS_SECRET, {
+  //   expiresIn: '2m',
+  // });
+  // const refreshToken = jwt.sign(payload, REFRESH_SECRET, {
+  //   expiresIn: '7d',
+  // });
+  const { accessToken, refreshToken } = tokensCreator(user._id);
 
-  const { token } = await User.findByIdAndUpdate(
+  // Update tokens
+  const updatedUser = await User.findByIdAndUpdate(
     user._id,
-    { token: accessToken },
+    { accessToken, refreshToken },
     { new: true }
   );
 
+  // Redirecting on the front-end rout vs tokens
   return res.redirect(
-    `${FRONTEND_URL}/google-redirect?accessToken=${token}&refreshToken=${'_none_'}`
+    `${FRONTEND_URL}/google-redirect?accessToken=${updatedUser.accessToken}&refreshToken=${updatedUser.refreshToken}`
   );
-
-  // return res.redirect(
-  //   `${FRONTEND_URL}?accessToken=${user.token}&refreshToken=${user.refreshToken}`
-  // );
-  // Cool to create on front-end gritting redirect page (user Please wait and spinner)
-  // React router / google - redirect(page)
 };
 
 module.exports = {

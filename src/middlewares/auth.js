@@ -1,32 +1,49 @@
-const { User } = require('../schemas/users');
-
 const jwt = require('jsonwebtoken');
+// const { HttpError } = require('../httpError');
 
-const { JWT_SECRET } = process.env;
+const { ACCESS_SECRET } = process.env;
+
+const { User } = require('../schemas/users');
 
 const auth = async (req, res, next) => {
   const { authorization = '' } = req.headers;
-  const [bearer, token] = authorization.split(' ');
+  const [typeAuth, accessToken] = authorization.split(' ');
+
+  if (typeAuth !== 'Bearer') {
+    // throw new HttpError('Not authorized', 401);
+    return res.status(401).json({
+      message: 'Invalid type of authorization',
+    });
+  }
+
   try {
-    if (bearer !== 'Bearer') {
-      return res.status(401).json({
-        message: 'Not authorized',
-      });
-    }
-    const { id } = jwt.verify(token, JWT_SECRET);
+    const { id } = jwt.verify(accessToken, ACCESS_SECRET);
+
     const user = await User.findById(id);
-    if (!user || !user.token) {
+
+    if (!user || !user.accessToken) {
+      // throw new HttpError('Not authorized', 401);
       return res.status(401).json({
         message: 'Not authorized',
       });
     }
+
     req.user = user;
+
     next();
   } catch (error) {
-    if (error.message === 'Invalid sugnature') {
-      error.status = 401;
+    console.log('From auth middleware ERROR: ', error);
+
+    if (error.name === 'TokenExpiredError') {
+      // return next(new HttpError(error.name, 401));
+      res.status(401).json({ massage: 'jwt expired' });
     }
-    next(error);
+
+    if (error.name === 'JsonWebTokenError') {
+      res.status(401).json({ massage: 'invalid token' });
+    }
+
+    // next(error);
   }
 };
 
