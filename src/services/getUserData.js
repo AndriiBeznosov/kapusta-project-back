@@ -11,7 +11,7 @@ const getUserData = async accessGoogleToken => {
 };
 
 // Response example
-// userData.data: {
+// userData: {
 //   id: 'userID',
 //   email: 'examle@gmail.com',
 //   verified_email: true / false,
