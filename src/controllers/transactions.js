@@ -1,6 +1,9 @@
 const {
   addTransaction,
   getSummary,
+  getAllSummaryReports,
+  getCategoryReports,
+  getItemsCategoryReports,
   getInformationPeriod,
   getAllTransactionsByOperation,
   transactionDelete,
@@ -65,6 +68,43 @@ const summaryByMonth = async (req, res) => {
   }
 };
 
+const allSummaryReports = async (req, res) => {
+  try {
+    const { month, year } = req.body;
+    const { id } = req.user;
+    const transaction = await getAllSummaryReports(id, month, year);
+    res.status(201).json(transaction);
+  } catch (error) {
+    res.status(error.code).json({ message: error.message });
+  }
+};
+const categoryReports = async (req, res) => {
+  try {
+    const { month, year, operation } = req.body;
+    const { id } = req.user;
+    const transaction = await getCategoryReports(id, month, year, operation);
+    res.status(201).json(transaction);
+  } catch (error) {
+    res.status(error.code).json({ message: error.message });
+  }
+};
+const itemsCategoryReports = async (req, res) => {
+  try {
+    const { month, year, operation, category } = req.body;
+    const { id } = req.user;
+    const transaction = await getItemsCategoryReports(
+      id,
+      month,
+      year,
+      operation,
+      category
+    );
+    res.status(201).json(transaction);
+  } catch (error) {
+    res.status(error.code).json({ message: error.message });
+  }
+};
+
 const informationPeriod = async (req, res, next) => {
   try {
     const { _id } = req.user;
@@ -91,6 +131,9 @@ module.exports = {
   newTransaction,
   deleteTransaction,
   summaryByMonth,
+  allSummaryReports,
+  categoryReports,
+  itemsCategoryReports,
   informationPeriod,
   getTransactions,
 };
