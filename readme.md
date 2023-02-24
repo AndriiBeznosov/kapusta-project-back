@@ -18,10 +18,12 @@ and@and.com was sent to you"}
 відправлене посилання для верифікації, потрібно перейти в пошту та пройти
 верифікацію.
 
-Після верифікацію з пошти відбувається rerender на сторінку
-`https://eimanager.netlify.app/`
+Після верифікацію з пошти відбувається redirect на сторінку
+`https://eimanager.netlify.app/` в параметрах буде переданий accessToken й
+refreshToken Його краще обробити й записати в localStorage Інформація ще є в
+"GET Верифікація користувача "
 
-Потрібно пройти login
+Вхід в систему через email та password (login)
 
 - `https://kapusta-project-back-production.up.railway.app/api/users/login`
 
@@ -34,8 +36,8 @@ and@and.com was sent to you"}
 
 ## PATCH Вихід з системи
 
-Карточці User записуються нові дані <token: null> Також потрібно видалити токен
-в localStorage
+Карточці User записуються нові дані <accessToken: null> та <refreshToken: null>
+Також потрібно видалити токен в localStorage
 
 - `https://kapusta-project-back-production.up.railway.app/api/users/logout`
 
@@ -49,15 +51,15 @@ and@and.com was sent to you"}
 
   ## GET Отримання інформації по user
 
-  Потрібно зробити запит, відповідь прийде якщо токен записаний в config.headers.Authorization
+  Потрібно зробити запит, відповідь прийде якщо токен записаний в
+  config.headers.Authorization
 
   - `https://kapusta-project-back-production.up.railway.app/api/users/get-user`
 
-  Відповідь: { "token":
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzZjY0N2U3ZWNkMzEwNDNhMTRiZTA1YSIsImlhdCI6MTY3NzE1MjIyMCwiZXhwIjoxNjc5NzQ0MjIwfQ.7dI9DdYRwVTcrhQhJg_VFB2fjIfP5AZW3uqzxmcDXEw",
-  "\_id": "63f647e7ecd31043a14be05a", "email": "andrey301288@gmail.com",
-  "userName": "andrey301", "avatarUrl": "", "balance": 100000,
-  "verificationToken": null, "verify": true }
+  Відповідь: { "accessToken": ".......","refreshToken":"....", "\_id":
+  "63f647e7ecd31043a14be05a", "email": "andrey301288@gmail.com", "userName":
+  "andrey301", "avatarUrl": "", "balance": 100000, "verificationToken": null,
+  "verify": true }
 
 ## GET Верифікація користувача (відбувається через пошту)
 
@@ -79,11 +81,15 @@ and@and.com was sent to you"}
 
 - `https://kapusta-project-back-production.up.railway.app/api/users/verify/:verificationToken`
 
+коли проходите верифікацію, створюється пара токенів й передається в параметрах
+як refreshToken та accessToken
+
 ## POST Завантаження фото
 
 Потрібно передати image
-`https://kapusta-project-back-production.up.railway.app/upload` Відповідь: {
-"url": "/uploads/IMG_6976.png" }
+`https://kapusta-project-back-production.up.railway.app/upload`
+
+- Відповідь: { "url": "/uploads/IMG_6976.png" }
 
 ## PATCH Оновлення даних по користувачу
 
@@ -93,7 +99,7 @@ and@and.com was sent to you"}
 
 Відповідь: Карточка User
 
-## GET Забув пароль
+## POST Забув пароль
 
 Потрібно передати: {email: .......}
 
@@ -116,7 +122,7 @@ and@and.com was sent to you"}
 Потрібно передати вид транзакціям {operation: "income"} або {operation:
 "expenses"}
 
-- `https://kapusta-project-back-production.up.railway.app/api/transaction/new`
+- `https://kapusta-project-back-production.up.railway.app/api/transaction/operation`
 
 Відповідь: [{},{},{}]
 
@@ -129,10 +135,21 @@ and@and.com was sent to you"}
 - `https://kapusta-project-back-production.up.railway.app/api/transaction/new`
 
 Відповідь: { "data": { "operation": "expenses", "description": "Купівля поні 2",
-"category": "Other", "sum": "5000", "date": "17.02.2023", "month": "February",
-"year": "2023", "currency": "UAH", "userId": "63f22620ab2035b9989fbbc4", "\_id":
-"63f39fea144b37647b5f0751", "createdAt": "2023-02-20T16:29:30.949Z",
-"updatedAt": "2023-02-20T16:29:30.949Z" } }
+"category": "Other", "sum": 32000, "date": "01.03.2023", "month": "March",
+"year": "2023", "currency": "UAH", "userId": "63f8ec1fe303b362792abbe5", "\_id":
+"63f915ddd03434efdbb4953c", "createdAt": "2023-02-24T19:54:05.719Z",
+"updatedAt": "2023-02-24T19:54:05.719Z" }, "user": { "balance": -32000 } }
+
+## DELETE Видалення транзакції
+
+Потрібно передати id транзакції
+
+- `https://kapusta-project-back-production.up.railway.app/api/transaction/delete/${< id-транзакції>}`
+
+Автоматично змінюється баланс в користувача й записується в карточку
+
+Відповідь успішної операції: { "id": "63f78fd91fcc9d9cf934d633", "user": {
+"balance": 100000 } }
 
 ## POST Отримати інформації по транзакціях за поточний рік по кожному місяцю
 
@@ -143,8 +160,7 @@ and@and.com was sent to you"}
 
 Відповідь:
 
-- { "transaction": [ { "month": "February", "sum": 510000 }, { "month":
-  "January", "sum": 600000 } ] }
+- [ { "month": "March", "sum": 163000, "monthNumber": 0.2 } ]
 
 ## GET Отримати інформацію по транзакціях за період
 
@@ -154,14 +170,30 @@ and@and.com was sent to you"}
 
 Відповідь: Повертає масив всіх транзакції
 
-## DELETE Видалення транзакції
+## POST -----------------
 
-Потрібно передати id транзакції
+Потрібно передати: { month, year, operation }
 
-- `https://kapusta-project-back-production.up.railway.app/api/transaction/delete/${< id-транзакції>}`
+- `https://kapusta-project-back-production.up.railway.app/api/transaction/all-summary-reports`
 
-Відповідь успішної операції: { "id": "63f78fd91fcc9d9cf934d633", "user": {
-"balance": 100000 } }
+Відповідь: [ { "operation": "expenses", "sum": 96000 }, { "operation": "income",
+"sum": 96000 } ]
+
+## POST -----------------
+
+Потрібно передати: { month, year, operation }
+
+- `https://kapusta-project-back-production.up.railway.app/api/transaction/category-reports`
+
+Відповідь: [ { "category": "Other", "sum": 96000 } ]
+
+## POST -----------------
+
+Потрібно передати: { month, year, operation, category }
+
+- `https://kapusta-project-back-production.up.railway.app/api/transaction/items-category-reports`
+
+Відповідь: [ { "category": "Other", "sum": 96000 } ]
 
 ### Команди:
 
@@ -171,7 +203,3 @@ and@and.com was sent to you"}
   виконувати перед кожним PR та виправляти всі помилки лінтера
 - `npm lint:fix` &mdash; та ж перевірка лінтера, але з автоматичними
   виправленнями простих помилок
-
-- запит повертає масив обьектів транзакціям <operation: "income",> та
-  <operation: "expenses"> для отримання актуальної інфомації обовязково потрібно
-  передавати токен usera

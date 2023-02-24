@@ -22,7 +22,7 @@ usersRouter.patch('/logout', auth, tryCatchWrapper(logout));
 usersRouter.patch('/balance', auth, tryCatchWrapper(changeBalance));
 usersRouter.patch('/update-user', auth, tryCatchWrapper(updateUser));
 usersRouter.get('/verify/:verificationToken', tryCatchWrapper(verifyEmail));
-usersRouter.get('/refresh-password', tryCatchWrapper(refreshPassword));
+usersRouter.post('/refresh-password', tryCatchWrapper(refreshPassword));
 
 usersRouter.post('/refresh', tryCatchWrapper(refreshTokenController));
 
