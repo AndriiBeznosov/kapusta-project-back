@@ -35,7 +35,30 @@ const createLoginInfoMail = (userEmail, password) => {
   return mail;
 };
 
+const passwordUpdateEmail = (email, password) => {
+  const mail = {
+    to: email,
+    subject: 'Kapusta Application. Resetting your password!',
+    html: `
+        <h3>
+      You have successfully updated your password in the Kapusta app!
+        </h3>
+        <p> Your password was randomly generated.</p>
+        <p>Here is </p>
+        <p><strong> LogIn: </strong>${email}</p>
+        <p><strong> Password: </strong>${password}</p>
+        <a style="text-decoration:none" target='_blank' href=${process.env.FRONTEND_URL}> <strong> Click the link to go to the Kapusta app !</strong> </a>
+        <p>
+        <strong>Have a good day and Enjoy using it!</strong>
+        </p>
+    `,
+  };
+
+  return mail;
+};
+
 module.exports = {
   createConfirmationMail,
   createLoginInfoMail,
+  passwordUpdateEmail,
 };

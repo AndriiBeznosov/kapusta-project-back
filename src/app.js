@@ -10,6 +10,7 @@ const staticRouter = require('./routes/static');
 const authGoogleRouter = require('./routes/authGoogle');
 
 const { upload } = require('./helpers/storegMulter');
+const { auth } = require('./middlewares/auth');
 
 const app = express();
 
@@ -27,7 +28,7 @@ app.use('/', authGoogleRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/transaction', usersTransaction);
 
-app.post('/upload', upload.single('image'), (req, res) => {
+app.post('/upload', auth, upload.single('image'), (req, res) => {
   res.json({ url: `/uploads/${req.file.originalname}` });
 });
 

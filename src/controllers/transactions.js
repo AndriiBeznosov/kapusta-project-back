@@ -1,14 +1,18 @@
 const {
   addTransaction,
   getSummary,
+  getAllSummaryReports,
+  getCategoryReports,
+  getItemsCategoryReports,
   getInformationPeriod,
   getAllTransactionsByOperation,
+  transactionDelete,
 } = require('../services/transactions');
 
 const {
   updateUserBalance,
+  updateUserBalanceAfterDelete,
 } = require('../services/transactionServices/updateUserBalance');
-const { Transaction } = require('../schemas/transactions');
 
 const newTransaction = async (req, res, _) => {
   try {
@@ -27,7 +31,6 @@ const newTransaction = async (req, res, _) => {
       .status(201)
       .json({ data: transaction, user: { balance: updatedUserBalance } });
   } catch (error) {
-    console.warn(error);
     res.status(error.code).json({ message: error.message });
   }
 };
@@ -35,18 +38,22 @@ const newTransaction = async (req, res, _) => {
 const deleteTransaction = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const result = await Transaction.findByIdAndRemove({ _id: id });
+    const transaction = await transactionDelete(id);
 
-    if (!result) {
-      return res.status(404).json({
-        message: 'Id of transaction not found',
-      });
-    }
-    res.status(200).json({
-      message: 'Your transaction was deleted!',
-    });
+    // Getting parameters for updating user balance
+    const { userId, operation: operationType, sum: operationSum } = transaction;
+    // Update user balance in DB
+    const updateBalance = await updateUserBalanceAfterDelete(
+      userId,
+      operationType,
+      operationSum
+    );
+
+    res
+      .status(200)
+      .json({ id: transaction._id, user: { balance: updateBalance } });
   } catch (error) {
-    next();
+    res.status(error.code).json({ message: error.message });
   }
 };
 
@@ -55,6 +62,43 @@ const summaryByMonth = async (req, res) => {
     const { operation } = req.body;
     const { id } = req.user;
     const transaction = await getSummary(id, operation);
+    res.status(201).json(transaction);
+  } catch (error) {
+    res.status(error.code).json({ message: error.message });
+  }
+};
+
+const allSummaryReports = async (req, res) => {
+  try {
+    const { month, year } = req.body;
+    const { id } = req.user;
+    const transaction = await getAllSummaryReports(id, month, year);
+    res.status(201).json(transaction);
+  } catch (error) {
+    res.status(error.code).json({ message: error.message });
+  }
+};
+const categoryReports = async (req, res) => {
+  try {
+    const { month, year, operation } = req.body;
+    const { id } = req.user;
+    const transaction = await getCategoryReports(id, month, year, operation);
+    res.status(201).json(transaction);
+  } catch (error) {
+    res.status(error.code).json({ message: error.message });
+  }
+};
+const itemsCategoryReports = async (req, res) => {
+  try {
+    const { month, year, operation, category } = req.body;
+    const { id } = req.user;
+    const transaction = await getItemsCategoryReports(
+      id,
+      month,
+      year,
+      operation,
+      category
+    );
     res.status(201).json(transaction);
   } catch (error) {
     res.status(error.code).json({ message: error.message });
@@ -87,6 +131,9 @@ module.exports = {
   newTransaction,
   deleteTransaction,
   summaryByMonth,
+  allSummaryReports,
+  categoryReports,
+  itemsCategoryReports,
   informationPeriod,
   getTransactions,
 };
