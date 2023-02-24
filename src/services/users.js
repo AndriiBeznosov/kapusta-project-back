@@ -1,11 +1,11 @@
-require('dotenv').config();
-const { JWT_SECRET } = process.env;
-
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+const { REFRESH_SECRET } = process.env;
+
 const { HttpError } = require('../httpError');
 const { User } = require('../schemas/users');
+const { tokensCreator } = require('../services/tokensCreator');
 const {
   createVerificationToken,
 } = require('../helpers/createVerificationToken');
@@ -61,6 +61,7 @@ const loginUser = async (email, password) => {
     }
 
     const isValidPass = await bcryptjs.compare(password, user.password);
+
     if (!isValidPass) {
       throw new HttpError('Invalid email address or password', 401);
     }
@@ -69,19 +70,16 @@ const loginUser = async (email, password) => {
       await sendMailConfirmationMail(user);
       throw new HttpError(`Please confirm the mail ${email}`, 401);
     }
-    const { _id: userId } = user;
-    const payload = { id: userId };
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '30d' });
 
-    const userUpdate = await User.findByIdAndUpdate(
-      userId,
-      { token },
-      {
-        new: true,
-      }
+    const { accessToken, refreshToken } = tokensCreator(user._id);
+
+    const updatedUser = await User.findByIdAndUpdate(
+      user._id,
+      { accessToken, refreshToken },
+      { new: true }
     );
 
-    return userUpdate;
+    return updatedUser;
   } catch (error) {
     if (error.message.includes('Not valid email')) {
       throw new HttpError(error.message, error.code);
@@ -94,10 +92,8 @@ const logoutUser = async id => {
   try {
     await User.findByIdAndUpdate(
       id,
-      { token: null },
-      {
-        new: true,
-      }
+      { accessToken: null, refreshToken: null },
+      { new: true }
     );
   } catch (error) {
     throw new HttpError(error.message, 404);
@@ -133,7 +129,7 @@ const verifyUserEmail = async verificationToken => {
       verificationToken: null,
     });
 
-    return user.token;
+    return { accessToken: user.accessToken, refreshToken: user.refreshToken };
   } catch (error) {
     throw new HttpError(error.message, error.code);
   }
@@ -142,7 +138,8 @@ const verifyUserEmail = async verificationToken => {
 const getUser = async id => {
   try {
     const {
-      token,
+      accessToken,
+      refreshToken,
       _id,
       email,
       userName,
@@ -151,12 +148,13 @@ const getUser = async id => {
       verificationToken,
       verify,
     } = await User.findById(id);
-    if (!token) {
+    if (!accessToken) {
       throw new HttpError('Invalid email address or password', 401);
     }
 
     return {
-      token,
+      accessToken,
+      refreshToken,
       _id,
       email,
       userName,
@@ -220,6 +218,31 @@ const updatePassword = async email => {
   }
 };
 
+const refreshTokenService = async verifiableToken => {
+  try {
+    const { id } = jwt.verify(verifiableToken, REFRESH_SECRET);
+    const checkTokenInDb = await User.findOne({
+      refreshToken: verifiableToken,
+    });
+
+    if (!checkTokenInDb) {
+      throw new HttpError('invalid token', 403);
+    }
+
+    const { accessToken, refreshToken } = tokensCreator(id);
+
+    await User.findByIdAndUpdate(
+      id,
+      { accessToken, refreshToken },
+      { new: true }
+    );
+
+    return { accessToken, refreshToken };
+  } catch (error) {
+    throw new HttpError(error.message, 403);
+  }
+};
+
 module.exports = {
   addUser,
   loginUser,
@@ -228,5 +251,6 @@ module.exports = {
   verifyUserEmail,
   getUser,
   update,
+  refreshTokenService,
   updatePassword,
 };

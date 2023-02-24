@@ -6,6 +6,7 @@ const {
   verifyUserEmail,
   getUser,
   update,
+  refreshTokenService,
   updatePassword,
 } = require('../services/users');
 
@@ -27,9 +28,17 @@ const register = async (req, res, _) => {
 
 const login = async (req, res, _) => {
   try {
-    const { email, password } = req.body;
-    const user = await loginUser(email, password);
-    return res.json(user);
+    const { email: userEmail, password } = req.body;
+    const { email, accessToken, refreshToken, balance, avatarUrl, userName } =
+      await loginUser(userEmail, password);
+    return res.json({
+      email,
+      accessToken,
+      refreshToken,
+      balance,
+      avatarUrl,
+      userName,
+    });
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
@@ -57,13 +66,17 @@ const changeBalance = async (req, res, _) => {
   }
 };
 
-const verifyEmail = async (req, res, _) => {
+const verifyEmail = async (req, res) => {
   const { verificationToken } = req.params;
 
   try {
-    await verifyUserEmail(verificationToken);
+    const { accessToken, refreshToken } = await verifyUserEmail(
+      verificationToken
+    );
 
-    res.redirect(process.env.FRONTEND_URL);
+    res.redirect(
+      `${process.env.FRONTEND_URL}?accessToken=${accessToken}&refreshToken=${refreshToken}`
+    );
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
@@ -102,6 +115,20 @@ const refreshPessword = async (req, res, _) => {
   }
 };
 
+const refreshTokenController = async (req, res, next) => {
+  const { refreshToken: receivedToken } = req.body;
+
+  try {
+    const { accessToken, refreshToken } = await refreshTokenService(
+      receivedToken
+    );
+
+    res.status(201).json({ accessToken, refreshToken });
+  } catch (error) {
+    res.status(error.code).json({ message: error.message });
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -110,5 +137,6 @@ module.exports = {
   verifyEmail,
   getMe,
   updateUser,
+  refreshTokenController,
   refreshPessword,
 };

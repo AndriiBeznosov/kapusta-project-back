@@ -12,7 +12,11 @@ const schema = new Schema(
       unique: true,
       match: [/[a-z0-9]+@[a-z0-9]/, 'user email is not valid'],
     },
-    token: {
+    accessToken: {
+      type: String,
+      default: null,
+    },
+    refreshToken: {
       type: String,
       default: null,
     },
