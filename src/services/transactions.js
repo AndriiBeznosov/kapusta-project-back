@@ -38,21 +38,25 @@ const getSummary = async (id, operation) => {
       year,
       operation,
     });
-
+    const monthNumbers = [];
     const result = transactions.reduce((acc, item) => {
       if (Object.keys(acc).includes(item.month)) {
         acc[item.month] = +acc[item.month] + +item.sum;
         return acc;
       }
+
       acc[item.month] = +item.sum;
+      monthNumbers.push(item.date.slice(5, 7));
+
       return acc;
     }, {});
 
     const newRes = [...Object.entries(result)];
-    const arrNew = newRes.map(itm => {
+    const arrNew = newRes.map((itm, idx) => {
       const trans = {
         month: itm[0],
         sum: itm[1],
+        monthNumber: +monthNumbers[idx],
       };
       return trans;
     });
