@@ -49,7 +49,7 @@ and@and.com was sent to you"}
 
   ## GET Отримання інформації по user
 
-  Потрібно передати: {\_id: ....}
+  Потрібно зробити запит, відповідь прийде якщо токен записаний в config.headers.Authorization
 
   - `https://kapusta-project-back-production.up.railway.app/api/users/get-user`
 
