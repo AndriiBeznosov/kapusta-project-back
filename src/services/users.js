@@ -71,10 +71,6 @@ const loginUser = async (email, password) => {
       throw new HttpError(`Please confirm the mail ${email}`, 401);
     }
 
-    // const payload = { id: user._id };
-    // Creating accessToken & refreshToken
-    // const accessToken = jwt.sign(payload, ACCESS_SECRET, { expiresIn: '2m' });
-    // const refreshToken = jwt.sign(payload, REFRESH_SECRET, { expiresIn: '7d' });
     const { accessToken, refreshToken } = tokensCreator(user._id);
 
     const updatedUser = await User.findByIdAndUpdate(

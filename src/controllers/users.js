@@ -28,9 +28,17 @@ const register = async (req, res, _) => {
 
 const login = async (req, res, _) => {
   try {
-    const { email, password } = req.body;
-    const user = await loginUser(email, password);
-    return res.json(user);
+    const { email: userEmail, password } = req.body;
+    const { email, accessToken, refreshToken, balance, avatarUrl, userName } =
+      await loginUser(userEmail, password);
+    return res.json({
+      email,
+      accessToken,
+      refreshToken,
+      balance,
+      avatarUrl,
+      userName,
+    });
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
