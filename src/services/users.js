@@ -123,13 +123,16 @@ const verifyUserEmail = async verificationToken => {
     if (!user) {
       throw new HttpError('Not found', 404);
     }
+    const { accessToken, refreshToken } = tokensCreator(user._id);
 
     await User.findByIdAndUpdate(user._id, {
       verify: true,
       verificationToken: null,
+      accessToken,
+      refreshToken,
     });
 
-    return { accessToken: user.accessToken, refreshToken: user.refreshToken };
+    return { accessToken, refreshToken };
   } catch (error) {
     throw new HttpError(error.message, error.code);
   }
