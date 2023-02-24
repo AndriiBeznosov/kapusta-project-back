@@ -89,14 +89,6 @@ const googleRedirect = async (req, res) => {
     );
   }
 
-  // User already exists. Creating access and refresh tokens
-  // const payload = { id: user._id };
-  // const accessToken = jwt.sign(payload, ACCESS_SECRET, {
-  //   expiresIn: '2m',
-  // });
-  // const refreshToken = jwt.sign(payload, REFRESH_SECRET, {
-  //   expiresIn: '7d',
-  // });
   const { accessToken, refreshToken } = tokensCreator(user._id);
 
   // Update tokens
