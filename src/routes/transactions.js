@@ -6,6 +6,7 @@ const {
   summaryByMonth,
   getTransactions,
   allSummaryReports,
+  categoryReports,
 } = require('../controllers/transactions');
 const { tryCatchWrapper } = require('../tryCatchWrapper/tryCatchWrapper');
 const { auth } = require('../middlewares/auth');
@@ -20,6 +21,11 @@ userTransaction.post(
   '/all-summary-reports',
   auth,
   tryCatchWrapper(allSummaryReports)
+);
+userTransaction.post(
+  '/category-reports',
+  auth,
+  tryCatchWrapper(categoryReports)
 );
 userTransaction.get(
   '/information-period',
