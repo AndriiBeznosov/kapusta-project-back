@@ -3,6 +3,7 @@ const {
   getSummary,
   getAllSummaryReports,
   getCategoryReports,
+  getItemsCategoryReports,
   getInformationPeriod,
   getAllTransactionsByOperation,
   transactionDelete,
@@ -87,6 +88,22 @@ const categoryReports = async (req, res) => {
     res.status(error.code).json({ message: error.message });
   }
 };
+const itemsCategoryReports = async (req, res) => {
+  try {
+    const { month, year, operation, category } = req.body;
+    const { id } = req.user;
+    const transaction = await getItemsCategoryReports(
+      id,
+      month,
+      year,
+      operation,
+      category
+    );
+    res.status(201).json(transaction);
+  } catch (error) {
+    res.status(error.code).json({ message: error.message });
+  }
+};
 
 const informationPeriod = async (req, res, next) => {
   try {
@@ -116,6 +133,7 @@ module.exports = {
   summaryByMonth,
   allSummaryReports,
   categoryReports,
+  itemsCategoryReports,
   informationPeriod,
   getTransactions,
 };

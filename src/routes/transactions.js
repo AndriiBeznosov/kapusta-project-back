@@ -7,6 +7,7 @@ const {
   getTransactions,
   allSummaryReports,
   categoryReports,
+  itemsCategoryReports,
 } = require('../controllers/transactions');
 const { tryCatchWrapper } = require('../tryCatchWrapper/tryCatchWrapper');
 const { auth } = require('../middlewares/auth');
@@ -26,6 +27,11 @@ userTransaction.post(
   '/category-reports',
   auth,
   tryCatchWrapper(categoryReports)
+);
+userTransaction.post(
+  '/items-category-reports',
+  auth,
+  tryCatchWrapper(itemsCategoryReports)
 );
 userTransaction.get(
   '/information-period',
