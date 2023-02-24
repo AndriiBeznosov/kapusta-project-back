@@ -128,13 +128,20 @@ const getCategoryReports = async (id, month, year, operation) => {
     throw new HttpError(error.message, 404);
   }
 };
-const getItemsCategoryReports = async (id, month, year, operation) => {
+const getItemsCategoryReports = async (
+  id,
+  month,
+  year,
+  operation,
+  category
+) => {
   try {
     const transactions = await Transaction.find({
       userId: id,
       year,
       month,
       operation,
+      category,
     });
 
     const result = transactions.reduce((acc, itm) => {
