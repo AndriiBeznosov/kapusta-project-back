@@ -103,7 +103,7 @@ const updateUser = async (req, res, _) => {
   }
 };
 
-const refreshPessword = async (req, res, _) => {
+const refreshPassword = async (req, res, _) => {
   const { email } = req.body;
   try {
     await updatePassword(email);
@@ -138,5 +138,5 @@ module.exports = {
   getMe,
   updateUser,
   refreshTokenController,
-  refreshPessword,
+  refreshPassword,
 };
