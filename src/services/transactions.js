@@ -11,23 +11,6 @@ const addTransaction = async (data, id) => {
   }
 };
 
-const getInformationPeriod = async (id, year, month) => {
-  try {
-    const transactions = await Transaction.find({
-      userId: id,
-      year,
-      month,
-    });
-    if (!transactions.length) {
-      return { message: 'There is no data for this request' };
-    }
-
-    return transactions;
-  } catch (error) {
-    throw new HttpError(error.message, 404);
-  }
-};
-
 const getSummary = async (id, operation) => {
   const today = new Date();
   const year = today.getFullYear();
@@ -195,7 +178,6 @@ module.exports = {
   getCategoryReports,
   getItemsCategoryReports,
   addTransaction,
-  getInformationPeriod,
   getAllTransactionsByOperation,
   transactionDelete,
 };

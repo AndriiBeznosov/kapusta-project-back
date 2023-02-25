@@ -2,7 +2,6 @@ const express = require('express');
 const {
   newTransaction,
   deleteTransaction,
-  informationPeriod,
   summaryByMonth,
   getTransactions,
   allSummaryReports,
@@ -32,11 +31,6 @@ userTransaction.post(
   '/items-category-reports',
   auth,
   tryCatchWrapper(itemsCategoryReports)
-);
-userTransaction.get(
-  '/information-period',
-  auth,
-  tryCatchWrapper(informationPeriod)
 );
 
 module.exports = userTransaction;

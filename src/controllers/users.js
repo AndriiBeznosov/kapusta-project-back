@@ -9,6 +9,7 @@ const {
   refreshTokenService,
   updatePassword,
 } = require('../services/users');
+const { visitUser } = require('../services/visitUser');
 
 const register = async (req, res, _) => {
   try {
@@ -29,8 +30,16 @@ const register = async (req, res, _) => {
 const login = async (req, res, _) => {
   try {
     const { email: userEmail, password } = req.body;
-    const { email, accessToken, refreshToken, balance, avatarUrl, userName } =
-      await loginUser(userEmail, password);
+    const {
+      email,
+      accessToken,
+      refreshToken,
+      balance,
+      avatarUrl,
+      userName,
+      firstVisit,
+      firstBalance,
+    } = await loginUser(userEmail, password);
     return res.json({
       email,
       accessToken,
@@ -38,6 +47,8 @@ const login = async (req, res, _) => {
       balance,
       avatarUrl,
       userName,
+      firstVisit,
+      firstBalance,
     });
   } catch (error) {
     res.status(error.code).json({ message: error.message });
@@ -60,7 +71,9 @@ const changeBalance = async (req, res, _) => {
 
   try {
     const result = await addBalance(id, balance);
-    return res.status(201).json({ balance: result.balance });
+    return res
+      .status(201)
+      .json({ balance: result.balance, firstBalance: result.firstBalance });
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
@@ -129,6 +142,24 @@ const refreshTokenController = async (req, res, next) => {
   }
 };
 
+const firstVisit = async (req, res, next) => {
+  try {
+    const newVisit = req.user.firstVisit;
+    const { id } = req.user;
+
+    if (!newVisit) {
+      const newStatus = await visitUser(newVisit, id);
+
+      res.status(201).json({ firstVisit: newStatus });
+      return;
+    }
+
+    res.status(201).json({ firstVisit: newVisit });
+  } catch (error) {
+    res.status(error.code).json({ message: error.message });
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -139,4 +170,5 @@ module.exports = {
   updateUser,
   refreshTokenController,
   refreshPassword,
+  firstVisit,
 };

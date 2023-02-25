@@ -47,7 +47,7 @@ refreshToken Його краще обробити й записати в localSt
 
 - `https://kapusta-project-back-production.up.railway.app/api/users/balance`
 
-  Відповідь успішної транзакції: { "message": "The exit was successful" }
+  Відповідь успішної транзакції: { "balance":200000, "firstBalance: true" }
 
   ## GET Отримання інформації по user
 
@@ -115,6 +115,17 @@ refreshToken Його краще обробити й записати в localSt
    database. Please register" }
 3. 401 { "message": "Please confirm the mail and@gmail.com by verifying" }
 
+## POST Відслідковування першого візиту
+
+Користувач на початку першого входу: {firstVisit: false}
+
+- `https://kapusta-project-back-production.up.railway.app/api/users/api/first-visit`
+
+Відправляєте запит на бек Змінює статус користувача на {firstVisit: true}, але
+відповідь йде зі старим статусом. Якщо користувач вже {firstVisit: true} то
+нічого не змінюється й повертається статус що користувач вже не перший раз
+заходить.
+
 ## Transaction /api/transaction ----------------
 
 ## POST Отримати транзакції
@@ -162,14 +173,6 @@ refreshToken Його краще обробити й записати в localSt
 
 - [ { "month": "March", "sum": 163000, "monthNumber": 0.2 } ]
 
-## GET Отримати інформацію по транзакціях за період
-
-потрібно передати період, приклад: <{ month: "February", year:"2023" }>
-
-- `https://kapusta-project-back-production.up.railway.app/api/transaction/information-period`
-
-Відповідь: Повертає масив всіх транзакції
-
 ## POST -----------------
 
 Потрібно передати: { month, year, operation }
@@ -194,12 +197,3 @@ refreshToken Його краще обробити й записати в localSt
 - `https://kapusta-project-back-production.up.railway.app/api/transaction/items-category-reports`
 
 Відповідь: [ { "category": "Other", "sum": 96000 } ]
-
-### Команди:
-
-- `npm start` &mdash; старт сервера в режимі production
-- `npm run start:dev` &mdash; старт сервера в режимі розробки (development)
-- `npm run lint` &mdash; запустити виконання перевірки коду з eslint, необхідно
-  виконувати перед кожним PR та виправляти всі помилки лінтера
-- `npm lint:fix` &mdash; та ж перевірка лінтера, але з автоматичними
-  виправленнями простих помилок
