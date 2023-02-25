@@ -40,6 +40,14 @@ const schema = new Schema(
       type: String,
       default: '',
     },
+    firstVisit: {
+      type: Boolean,
+      default: false,
+    },
+    firstBalance: {
+      type: Boolean,
+      default: false,
+    },
   },
   { versionKey: false, timestamps: true }
 );

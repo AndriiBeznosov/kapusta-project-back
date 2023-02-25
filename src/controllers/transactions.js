@@ -51,7 +51,7 @@ const deleteTransaction = async (req, res, next) => {
 
     res
       .status(200)
-      .json({ id: transaction._id, user: { balance: updateBalance } });
+      .json({ data: transaction, user: { balance: updateBalance } });
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
