@@ -74,14 +74,13 @@ const getAllSummaryReports = async (id, month, year) => {
       month,
     });
 
-    const result = transactions.reduce((acc, itm) => {
-      if (Object.keys(acc).includes(itm.operation)) {
+    const result = transactions.reduce(
+      (acc, itm) => {
         acc[itm.operation] = +acc[itm.operation] + +itm.sum;
         return acc;
-      }
-      acc[itm.operation] = itm.sum;
-      return acc;
-    }, {});
+      },
+      { income: 0, expenses: 0 }
+    );
 
     const newRes = [...Object.entries(result)];
     const arrNew = newRes.map((itm, idx) => {
