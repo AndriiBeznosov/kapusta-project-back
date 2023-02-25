@@ -10,6 +10,11 @@ const {
   refreshTokenController,
   refreshPassword,
 } = require('../controllers/users');
+
+const {
+  currentBalanceController,
+} = require('../controllers/users/currentBalanceController');
+
 const { tryCatchWrapper } = require('../tryCatchWrapper/tryCatchWrapper');
 const { auth } = require('../middlewares/auth');
 
@@ -23,6 +28,12 @@ usersRouter.patch('/balance', auth, tryCatchWrapper(changeBalance));
 usersRouter.patch('/update-user', auth, tryCatchWrapper(updateUser));
 usersRouter.get('/verify/:verificationToken', tryCatchWrapper(verifyEmail));
 usersRouter.post('/refresh-password', tryCatchWrapper(refreshPassword));
+
+usersRouter.get(
+  '/current-balance',
+  auth,
+  tryCatchWrapper(currentBalanceController)
+);
 
 usersRouter.post('/refresh', tryCatchWrapper(refreshTokenController));
 

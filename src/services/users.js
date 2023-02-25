@@ -57,7 +57,7 @@ const loginUser = async (email, password) => {
     const user = await User.findOne({ email: emailCheck });
 
     if (!user) {
-      throw new HttpError('Invalid email address or password', 401);
+      throw new HttpError('User with this email not found', 400);
     }
 
     const isValidPass = await bcryptjs.compare(password, user.password);

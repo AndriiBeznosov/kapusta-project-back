@@ -9,8 +9,10 @@ const { sendMail } = require('../helpers/sendMail');
 
 const { BASE_URL, GOOGLE_CLIENT_ID, FRONTEND_URL } = process.env;
 
-const { getGoogleToken } = require('../services/getGoogleToken');
-const { getUserData } = require('../services/getUserData');
+const {
+  getGoogleToken,
+} = require('../services/googleAuthServices/getGoogleToken');
+const { getUserData } = require('../services/googleAuthServices/getUserData');
 const { tokensCreator } = require('../services/tokensCreator');
 const googleAuth = async (req, res) => {
   // Created a query parameter string from an Object
