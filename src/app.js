@@ -1,6 +1,8 @@
 const express = require('express');
 const logger = require('morgan');
 const cors = require('cors');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('../swagger.json');
 
 const usersRouter = require('./routes/users');
 const usersTransaction = require('./routes/transactions');
@@ -27,6 +29,7 @@ app.use('/', authGoogleRouter);
 
 app.use('/api/users', usersRouter);
 app.use('/api/transaction', usersTransaction);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.post('/upload', auth, upload.single('image'), (req, res) => {
   res.json({ url: `/uploads/${req.file.originalname}` });
