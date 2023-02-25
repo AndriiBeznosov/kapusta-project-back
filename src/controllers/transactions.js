@@ -4,7 +4,7 @@ const {
   getAllSummaryReports,
   getCategoryReports,
   getItemsCategoryReports,
-  getInformationPeriod,
+
   getAllTransactionsByOperation,
   transactionDelete,
 } = require('../services/transactions');
@@ -105,17 +105,6 @@ const itemsCategoryReports = async (req, res) => {
   }
 };
 
-const informationPeriod = async (req, res, next) => {
-  try {
-    const { _id } = req.user;
-    const { year, month } = req.body;
-    const information = await getInformationPeriod(_id, year, month);
-    res.status(200).json(information);
-  } catch (error) {
-    res.status(error.code).json({ message: error.message });
-  }
-};
-
 const getTransactions = async (req, res, next) => {
   try {
     const { id } = req.user;
@@ -134,6 +123,5 @@ module.exports = {
   allSummaryReports,
   categoryReports,
   itemsCategoryReports,
-  informationPeriod,
   getTransactions,
 };

@@ -107,9 +107,10 @@ const addBalance = async (id, balance) => {
   try {
     const resultBalance = await User.findByIdAndUpdate(
       id,
-      { balance },
+      { balance, firstBalance: true },
       { new: true }
     );
+
     return resultBalance;
   } catch (error) {
     throw new HttpError(error.message, 404);
@@ -150,6 +151,8 @@ const getUser = async id => {
       balance,
       verificationToken,
       verify,
+      firstVisit,
+      firstBalance,
     } = await User.findById(id);
     if (!accessToken) {
       throw new HttpError('Invalid email address or password', 401);
@@ -165,6 +168,8 @@ const getUser = async id => {
       balance,
       verificationToken,
       verify,
+      firstVisit,
+      firstBalance,
     };
   } catch (error) {
     throw new HttpError(error.message, error.code);
