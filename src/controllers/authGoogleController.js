@@ -78,7 +78,7 @@ const googleRedirect = async (req, res) => {
   );
 
   return res.redirect(
-    `${FRONTEND_URL}/auth/google-redirect?accessToken=${updatedUser.accessToken}&refreshToken=${updatedUser.refreshToken}`
+    `${FRONTEND_URL}/google-redirect?accessToken=${updatedUser.accessToken}&refreshToken=${updatedUser.refreshToken}`
   );
 };
 
