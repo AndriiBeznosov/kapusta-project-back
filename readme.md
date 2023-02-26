@@ -93,7 +93,7 @@ refreshToken Його краще обробити й записати в localSt
 
 ## PATCH Оновлення даних по користувачу
 
-Можна оновити: {userName:...., avatarUrl:......}
+Можна оновити: {userName:...., avatarUrl:......, password: .....}
 
 - `https://kapusta-project-back-production.up.railway.app/api/users/update-user`
 
@@ -125,6 +125,14 @@ refreshToken Його краще обробити й записати в localSt
 відповідь йде зі старим статусом. Якщо користувач вже {firstVisit: true} то
 нічого не змінюється й повертається статус що користувач вже не перший раз
 заходить.
+
+## POST Перевірка паролю
+
+Потрібно передати: {password : .......}
+
+- `https://kapusta-project-back-production.up.railway.app/api/users/password-verification`
+
+Відповідь: {status: <true або false>}
 
 ## Transaction /api/transaction ----------------
 
