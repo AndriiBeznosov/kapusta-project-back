@@ -93,7 +93,7 @@ const updateUser = async (req, res, _) => {
   const { userName, avatarUrl, password } = req.body;
   try {
     const updateUser = await update(id, userName, avatarUrl, password);
-    return res.status(201).json({ updateUser });
+    return res.status(201).json(updateUser);
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
