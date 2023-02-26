@@ -10,6 +10,7 @@ const {
   refreshTokenController,
   refreshPassword,
   firstVisit,
+  passwordVerification,
 } = require('../controllers/users');
 const { tryCatchWrapper } = require('../tryCatchWrapper/tryCatchWrapper');
 const { auth } = require('../middlewares/auth');
@@ -27,5 +28,10 @@ usersRouter.post('/refresh-password', tryCatchWrapper(refreshPassword));
 
 usersRouter.post('/refresh', tryCatchWrapper(refreshTokenController));
 usersRouter.post('/first-visit', auth, tryCatchWrapper(firstVisit));
+usersRouter.post(
+  '/password-verification',
+  auth,
+  tryCatchWrapper(passwordVerification)
+);
 
 module.exports = usersRouter;

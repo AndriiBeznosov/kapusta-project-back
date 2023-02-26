@@ -76,7 +76,10 @@ const loginUser = async (email, password) => {
     const updatedUser = await User.findByIdAndUpdate(
       user._id,
       { accessToken, refreshToken },
-      { new: true }
+      {
+        new: true,
+        fields: '-password -createdAt -updatedAt -verificationToken -_id',
+      }
     );
 
     return updatedUser;
@@ -132,7 +135,6 @@ const verifyUserEmail = async verificationToken => {
       accessToken,
       refreshToken,
     });
-
     return { accessToken, refreshToken };
   } catch (error) {
     throw new HttpError(error.message, error.code);
@@ -141,52 +143,33 @@ const verifyUserEmail = async verificationToken => {
 
 const getUser = async id => {
   try {
-    const {
-      accessToken,
-      refreshToken,
-      _id,
-      email,
-      userName,
-      avatarUrl,
-      balance,
-      verificationToken,
-      verify,
-      firstVisit,
-      firstBalance,
-    } = await User.findById(id);
-    if (!accessToken) {
+    const user = await User.findById(id, '-password -createdAt -updatedAt');
+    if (!user.accessToken) {
       throw new HttpError('Invalid email address or password', 401);
     }
-
-    return {
-      accessToken,
-      refreshToken,
-      _id,
-      email,
-      userName,
-      avatarUrl,
-      balance,
-      verificationToken,
-      verify,
-      firstVisit,
-      firstBalance,
-    };
+    return user;
   } catch (error) {
     throw new HttpError(error.message, error.code);
   }
 };
 
-const update = async (id, userName, avatarUrl) => {
+const update = async (id, userName, avatarUrl, password) => {
   try {
+    const salt = await bcryptjs.genSalt();
+    const hashedPassword = await bcryptjs.hash(password, salt);
+
     const user = await User.updateOne(
       { _id: id },
-      { userName, avatarUrl },
+      { userName, avatarUrl, password: hashedPassword },
       { new: true }
     );
     if (!user) {
       throw new HttpError('Invalid email address or password', 401);
     }
-    const updatePost = await User.findById(id);
+    const updatePost = await User.findById(
+      id,
+      '-password -createdAt -updatedAt -verificationToken -refreshToken -_id'
+    );
 
     return updatePost;
   } catch (error) {
@@ -251,6 +234,16 @@ const refreshTokenService = async verifiableToken => {
   }
 };
 
+const getPassword = async (id, password) => {
+  try {
+    const user = await User.findById(id);
+    const passwordStatus = await bcryptjs.compare(password, user.password);
+    return passwordStatus;
+  } catch (error) {
+    throw new HttpError(error.message, error.code);
+  }
+};
+
 module.exports = {
   addUser,
   loginUser,
@@ -261,4 +254,5 @@ module.exports = {
   update,
   refreshTokenService,
   updatePassword,
+  getPassword,
 };
