@@ -119,7 +119,7 @@ refreshToken Його краще обробити й записати в localSt
 
 Користувач на початку першого входу: {firstVisit: false}
 
-- `https://kapusta-project-back-production.up.railway.app/api/users/api/first-visit`
+- `https://kapusta-project-back-production.up.railway.app/api/users/first-visit`
 
 Відправляєте запит на бек Змінює статус користувача на {firstVisit: true}, але
 відповідь йде зі старим статусом. Якщо користувач вже {firstVisit: true} то
