@@ -75,16 +75,17 @@ const updateUserBalanceAfterDelete = async (
 
 const updateUserBalanceAfterAllDeleteTransactions = async userId => {
   try {
-    const resultBalance = await User.findByIdAndUpdate(
+    const user = await User.findByIdAndUpdate(
       userId,
       { balance: 0, firstBalance: false },
       { new: true }
     );
-    return resultBalance;
+    return user;
   } catch (error) {
     throw new HttpError(error.message, 404);
   }
 };
+
 const updateUserBalanceAfterAllDeleteTransactionsByOperation = async (
   userId,
   operation
@@ -104,12 +105,12 @@ const updateUserBalanceAfterAllDeleteTransactionsByOperation = async (
       operation === 'expenses'
         ? balance + sumByOperation
         : balance - sumByOperation;
-    const resultBalance = await User.findByIdAndUpdate(
+    const user = await User.findByIdAndUpdate(
       userId,
       { balance: newBalance },
       { new: true }
     );
-    return resultBalance;
+    return user;
   } catch (error) {
     throw new HttpError(error.message, 404);
   }

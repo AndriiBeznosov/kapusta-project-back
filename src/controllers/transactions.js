@@ -120,12 +120,17 @@ const getTransactions = async (req, res, next) => {
   }
 };
 
-const deleteAllTransactions = async (req, res, _) => {
+const deleteAllTransactionsAndBalance = async (req, res, _) => {
   try {
     const { id } = req.user;
     const info = await deleteServiceAllTransactions(id);
-    const balance = await updateUserBalanceAfterAllDeleteTransactions(id);
-    res.status(200).json({ transactions: [], info, balance: balance.balance });
+    const userUpdated = await updateUserBalanceAfterAllDeleteTransactions(id);
+    res.status(200).json({
+      transactions: [],
+      info,
+      balance: userUpdated.balance,
+      firstBalance: userUpdated.firstBalance,
+    });
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
@@ -135,14 +140,18 @@ const deleteAllTransactionsByOperation = async (req, res, _) => {
   try {
     const { operation } = req.body;
     const { id } = req.user;
-    const balance =
+    const userUpdated =
       await updateUserBalanceAfterAllDeleteTransactionsByOperation(
         id,
         operation
       );
     const info = await deleteServiceAllTransactionsByOperation(id, operation);
 
-    res.status(200).json({ transactions: [], info, balance: balance.balance });
+    res.status(200).json({
+      transactions: [],
+      info,
+      balance: userUpdated.balance,
+    });
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
@@ -156,6 +165,6 @@ module.exports = {
   categoryReports,
   itemsCategoryReports,
   getTransactions,
-  deleteAllTransactions,
+  deleteAllTransactionsAndBalance,
   deleteAllTransactionsByOperation,
 };
