@@ -7,11 +7,15 @@ const {
 
   getAllTransactionsByOperation,
   transactionDelete,
+  deleteServiceAllTransactions,
+  deleteServiceAllTransactionsByOperation,
 } = require('../services/transactions');
 
 const {
   updateUserBalance,
   updateUserBalanceAfterDelete,
+  updateUserBalanceAfterAllDeleteTransactions,
+  updateUserBalanceAfterAllDeleteTransactionsByOperation,
 } = require('../services/transactionServices/updateUserBalance');
 
 const newTransaction = async (req, res, _) => {
@@ -116,6 +120,34 @@ const getTransactions = async (req, res, next) => {
   }
 };
 
+const deleteAllTransactions = async (req, res, _) => {
+  try {
+    const { id } = req.user;
+    const info = await deleteServiceAllTransactions(id);
+    const balance = await updateUserBalanceAfterAllDeleteTransactions(id);
+    res.status(200).json({ transactions: [], info, balance: balance.balance });
+  } catch (error) {
+    res.status(error.code).json({ message: error.message });
+  }
+};
+
+const deleteAllTransactionsByOperation = async (req, res, _) => {
+  try {
+    const { operation } = req.body;
+    const { id } = req.user;
+    const balance =
+      await updateUserBalanceAfterAllDeleteTransactionsByOperation(
+        id,
+        operation
+      );
+    const info = await deleteServiceAllTransactionsByOperation(id, operation);
+
+    res.status(200).json({ transactions: [], info, balance: balance.balance });
+  } catch (error) {
+    res.status(error.code).json({ message: error.message });
+  }
+};
+
 module.exports = {
   newTransaction,
   deleteTransaction,
@@ -124,4 +156,6 @@ module.exports = {
   categoryReports,
   itemsCategoryReports,
   getTransactions,
+  deleteAllTransactions,
+  deleteAllTransactionsByOperation,
 };

@@ -171,6 +171,30 @@ const transactionDelete = async id => {
     throw new HttpError(error.message, 404);
   }
 };
+const deleteServiceAllTransactions = async id => {
+  try {
+    const response = await Transaction.deleteMany({
+      userId: id,
+    });
+
+    return response;
+  } catch (error) {
+    throw new HttpError(error.message, 404);
+  }
+};
+
+const deleteServiceAllTransactionsByOperation = async (id, operation) => {
+  try {
+    const response = await Transaction.deleteMany({
+      userId: id,
+      operation,
+    });
+
+    return response;
+  } catch (error) {
+    throw new HttpError(error.message, 404);
+  }
+};
 
 module.exports = {
   getSummary,
@@ -180,4 +204,6 @@ module.exports = {
   addTransaction,
   getAllTransactionsByOperation,
   transactionDelete,
+  deleteServiceAllTransactions,
+  deleteServiceAllTransactionsByOperation,
 };
