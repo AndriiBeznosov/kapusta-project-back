@@ -1,4 +1,6 @@
+const { Transaction } = require('../../schemas/transactions');
 const { User } = require('../../schemas/users');
+const { HttpError } = require('../../httpError');
 
 const updateUserBalance = async (userId, operationType, operationSum) => {
   try {
@@ -71,7 +73,51 @@ const updateUserBalanceAfterDelete = async (
   }
 };
 
+const updateUserBalanceAfterAllDeleteTransactions = async userId => {
+  try {
+    const resultBalance = await User.findByIdAndUpdate(
+      userId,
+      { balance: 0, firstBalance: false },
+      { new: true }
+    );
+    return resultBalance;
+  } catch (error) {
+    throw new HttpError(error.message, 404);
+  }
+};
+const updateUserBalanceAfterAllDeleteTransactionsByOperation = async (
+  userId,
+  operation
+) => {
+  try {
+    const transactionsByOperation = await Transaction.find({
+      userId,
+      operation,
+    });
+    const sumByOperation = transactionsByOperation.reduce((acc, item) => {
+      acc += item.sum;
+      return acc;
+    }, 0);
+    const { balance } = await User.findById(userId);
+
+    const newBalance =
+      operation === 'expenses'
+        ? balance + sumByOperation
+        : balance - sumByOperation;
+    const resultBalance = await User.findByIdAndUpdate(
+      userId,
+      { balance: newBalance },
+      { new: true }
+    );
+    return resultBalance;
+  } catch (error) {
+    throw new HttpError(error.message, 404);
+  }
+};
+
 module.exports = {
   updateUserBalance,
   updateUserBalanceAfterDelete,
+  updateUserBalanceAfterAllDeleteTransactions,
+  updateUserBalanceAfterAllDeleteTransactionsByOperation,
 };
