@@ -155,12 +155,19 @@ const getUser = async id => {
 
 const update = async (id, userName, avatarUrl, password) => {
   try {
-    const salt = await bcryptjs.genSalt();
-    const hashedPassword = await bcryptjs.hash(password, salt);
+    if (password) {
+      const salt = await bcryptjs.genSalt();
+      const hashedPassword = await bcryptjs.hash(password, salt);
+      await User.updateOne(
+        { _id: id },
+        { password: hashedPassword },
+        { new: true }
+      );
+    }
 
     const user = await User.updateOne(
       { _id: id },
-      { userName, avatarUrl, password: hashedPassword },
+      { userName, avatarUrl },
       { new: true }
     );
     if (!user) {
