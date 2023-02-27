@@ -112,7 +112,7 @@ const refreshPassword = async (req, res, _) => {
 };
 
 const refreshTokenController = async (req, res, next) => {
-  const { refreshToken: receivedToken } = req.body;
+  const { accessToken: receivedToken } = req.body;
 
   try {
     const { accessToken, refreshToken } = await refreshTokenService(

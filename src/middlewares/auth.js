@@ -32,15 +32,15 @@ const auth = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.log('From auth middleware ERROR: ', error);
+    // console.log('From auth middleware ERROR: ', error);
 
     if (error.name === 'TokenExpiredError') {
       // return next(new HttpError(error.name, 401));
-      res.status(401).json({ massage: 'jwt expired' });
+      res.status(401).json({ message: 'jwt expired' });
     }
 
     if (error.name === 'JsonWebTokenError') {
-      res.status(401).json({ massage: 'invalid token' });
+      res.status(401).json({ message: 'invalid token' });
     }
 
     // next(error);

@@ -211,7 +211,9 @@ const updatePassword = async email => {
 
 const refreshTokenService = async verifiableToken => {
   try {
+    console.log(verifiableToken);
     const { id } = jwt.verify(verifiableToken, REFRESH_SECRET);
+
     const checkTokenInDb = await User.findOne({
       refreshToken: verifiableToken,
     });
