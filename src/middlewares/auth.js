@@ -4,6 +4,9 @@ const jwt = require('jsonwebtoken');
 const { ACCESS_SECRET } = process.env;
 
 const { User } = require('../schemas/users');
+const {
+  checkTokenInBlackList,
+} = require('../services/userServices/tokenBlackList');
 
 const auth = async (req, res, next) => {
   const { authorization = '' } = req.headers;
@@ -21,7 +24,9 @@ const auth = async (req, res, next) => {
 
     const user = await User.findById(id);
 
-    if (!user || !user.accessToken) {
+    const { isTokenInBlackList } = await checkTokenInBlackList(id, accessToken);
+
+    if (!user || !user.accessToken || isTokenInBlackList) {
       // throw new HttpError('Not authorized', 401);
       return res.status(401).json({
         message: 'Not authorized',

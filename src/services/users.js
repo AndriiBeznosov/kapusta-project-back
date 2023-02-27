@@ -5,6 +5,7 @@ const { REFRESH_SECRET } = process.env;
 
 const { HttpError } = require('../httpError');
 const { User } = require('../schemas/users');
+
 const { tokensCreator } = require('../services/tokensCreator');
 const {
   createVerificationToken,
