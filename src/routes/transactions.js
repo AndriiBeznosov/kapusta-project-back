@@ -7,7 +7,7 @@ const {
   allSummaryReports,
   categoryReports,
   itemsCategoryReports,
-  deleteAllTransactions,
+  deleteAllTransactionsAndBalance,
   deleteAllTransactionsByOperation,
 } = require('../controllers/transactions');
 const { tryCatchWrapper } = require('../tryCatchWrapper/tryCatchWrapper');
@@ -37,7 +37,7 @@ userTransaction.post(
 userTransaction.delete(
   '/delete-all',
   auth,
-  tryCatchWrapper(deleteAllTransactions)
+  tryCatchWrapper(deleteAllTransactionsAndBalance)
 );
 userTransaction.delete(
   '/delete-all-operation',
