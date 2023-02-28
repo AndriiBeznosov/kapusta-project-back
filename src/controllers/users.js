@@ -52,7 +52,7 @@ const logout = async (req, res, _) => {
 
     await addTokenToBlackList(id, accessToken);
 
-    return res.status(201).json({ message: 'The exit was successful' });
+    return res.status(200).json({ message: 'The exit was successful' });
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
@@ -92,7 +92,7 @@ const getMe = async (req, res, _) => {
   const { id } = req.user;
   try {
     const userInfo = await getUser(id);
-    return res.status(201).json(userInfo);
+    return res.status(200).json(userInfo);
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
