@@ -57,18 +57,18 @@ const loginUser = async (email, password) => {
     const user = await User.findOne({ email: emailCheck });
 
     if (!user) {
-      throw new HttpError('Invalid email address or password', 401);
+      throw new HttpError('Invalid email address or password', 400);
     }
 
     const isValidPass = await bcryptjs.compare(password, user.password);
 
     if (!isValidPass) {
-      throw new HttpError('Invalid email address or password', 401);
+      throw new HttpError('Invalid email address or password', 400);
     }
 
     if (!user.verify) {
       await sendMailConfirmationMail(user);
-      throw new HttpError(`Please confirm the mail ${email}`, 401);
+      throw new HttpError(`Please confirm the mail ${email}`, 400);
     }
 
     const { accessToken, refreshToken } = tokensCreator(user._id);
