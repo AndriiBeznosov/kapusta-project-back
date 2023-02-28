@@ -224,7 +224,7 @@ module.exports = {
   getSummary,
   getAllSummaryReports,
   getCategoryReports,
-
+  getItemsCategoryReports,
   addTransaction,
   getAllTransactionsByOperation,
   transactionDelete,
