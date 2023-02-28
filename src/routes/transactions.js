@@ -9,6 +9,7 @@ const {
   itemsCategoryReports,
   deleteAllTransactionsAndBalance,
   deleteAllTransactionsByOperation,
+  infoAllTransaction,
 } = require('../controllers/transactions');
 const { tryCatchWrapper } = require('../tryCatchWrapper/tryCatchWrapper');
 const { auth } = require('../middlewares/auth');
@@ -43,6 +44,11 @@ userTransaction.delete(
   '/delete-all-operation',
   auth,
   tryCatchWrapper(deleteAllTransactionsByOperation)
+);
+userTransaction.post(
+  '/all-operation',
+  auth,
+  tryCatchWrapper(infoAllTransaction)
 );
 
 module.exports = userTransaction;

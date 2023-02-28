@@ -9,6 +9,7 @@ const {
   transactionDelete,
   deleteServiceAllTransactions,
   deleteServiceAllTransactionsByOperation,
+  infoTransaction,
 } = require('../services/transactions');
 
 const {
@@ -156,6 +157,18 @@ const deleteAllTransactionsByOperation = async (req, res, _) => {
     res.status(error.code).json({ message: error.message });
   }
 };
+const infoAllTransaction = async (req, res, _) => {
+  try {
+    const { operation, month, year, category } = req.body;
+    const { id } = req.user;
+
+    const data = await infoTransaction(id, operation, month, year, category);
+
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(error.code).json({ message: error.message });
+  }
+};
 
 module.exports = {
   newTransaction,
@@ -167,4 +180,5 @@ module.exports = {
   getTransactions,
   deleteAllTransactionsAndBalance,
   deleteAllTransactionsByOperation,
+  infoAllTransaction,
 };
