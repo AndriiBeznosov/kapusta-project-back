@@ -210,9 +210,9 @@ const infoTransaction = async (id, operation, month, year, category) => {
 
     return [
       {
-        'Items Category Reports': data1,
-        'All Summary Reports': data2,
-        'Category Reports': data3,
+        itemsCategoryReports: data1,
+        allSummaryReports: data2,
+        categoryReports: data3,
       },
     ];
   } catch (error) {
