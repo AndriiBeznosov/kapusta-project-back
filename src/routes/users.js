@@ -28,7 +28,7 @@ const usersRouter = express.Router();
 
 usersRouter.post(
   '/register',
-  tryCatchWrapper(validateUser(loginSchema)),
+  validateUser(loginSchema),
   tryCatchWrapper(register)
 );
 usersRouter.post('/login', validateUser(loginSchema), tryCatchWrapper(login));
