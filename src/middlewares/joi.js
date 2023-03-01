@@ -5,7 +5,6 @@ const validateUser = schema => {
     const { error } = schema.validate(req.body);
 
     if (error) {
-      console.log(req.body);
       throw new HttpError(error.message, 400);
     }
     return next();
@@ -16,7 +15,6 @@ const validateTransaction = schema => {
   return (req, _, next) => {
     const { error } = schema.validate(req.body);
     if (error) {
-      console.log(req.body);
       throw new HttpError(error.message, 400);
     }
     return next();
