@@ -626,7 +626,7 @@
           }
         },
         "responses": {
-          "201": {
+          "200": {
             "description": "success",
             "content": {
               "application/json": {
@@ -711,6 +711,37 @@
         }
       }
     },
+    "/transaction/all-operation": {
+      "post": {
+        "tags": ["Transactions"],
+        "summary": "All transactions",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "All Transactions",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransactionAllOperationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetTransactionAllOperationResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/transaction/items-category-reports": {
       "post": {
         "tags": ["Transactions"],
@@ -729,7 +760,7 @@
           }
         },
         "responses": {
-          "201": {
+          "200": {
             "description": "success",
             "content": {
               "application/json": {
@@ -1727,6 +1758,7 @@
           }
         }
       },
+
       "TransactionCategoryRequest": {
         "type": "object",
         "properties": {
@@ -1772,6 +1804,31 @@
           }
         }
       },
+      "TransactionAllOperationRequest": {
+        "type": "object",
+        "properties": {
+          "operation": {
+            "type": "string",
+            "description": "Type of transaction",
+            "example": "income"
+          },
+          "category": {
+            "type": "string",
+            "description": "Type of transaction",
+            "example": "Salary"
+          },
+          "month": {
+            "type": "string",
+            "description": "Month of transaction",
+            "example": "February"
+          },
+          "year": {
+            "type": "string",
+            "description": "Year of transaction",
+            "example": "2023"
+          }
+        }
+      },
       "GetTransactionCategoryResponse": {
         "type": "object",
         "properties": {
@@ -1783,6 +1840,20 @@
           "sum": {
             "type": "number",
             "description": "Sum of category"
+          }
+        }
+      },
+      "GetTransactionAllOperationResponse": {
+        "type": "object",
+        "properties": {
+          "operation": {
+            "type": "string",
+            "description": "Type of transaction",
+            "example": "income"
+          },
+          "sum": {
+            "type": "number",
+            "description": "Sum of transaction"
           }
         }
       },
@@ -1800,6 +1871,7 @@
         }
       }
     },
+
     "securitySchemes": {
       "Bearer": {
         "type": "http",
