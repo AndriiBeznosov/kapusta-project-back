@@ -19,6 +19,7 @@ const {
   updateUserBalanceAfterAllDeleteTransactionsByOperation,
 } = require('../services/transactionServices/updateUserBalance');
 
+// Adding a new transaction
 const newTransaction = async (req, res, _) => {
   try {
     const transaction = await addTransaction(req.body, req.user._id);
@@ -39,7 +40,7 @@ const newTransaction = async (req, res, _) => {
     res.status(error.code).json({ message: error.message });
   }
 };
-
+// Deleting a transaction by id
 const deleteTransaction = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -61,7 +62,7 @@ const deleteTransaction = async (req, res, next) => {
     res.status(error.code).json({ message: error.message });
   }
 };
-
+//  Get the sum of the transaction by income, expenses
 const summaryByMonth = async (req, res) => {
   try {
     const { operation } = req.body;
@@ -83,6 +84,7 @@ const allSummaryReports = async (req, res) => {
     res.status(error.code).json({ message: error.message });
   }
 };
+
 const categoryReports = async (req, res) => {
   try {
     const { month, year, operation } = req.body;
@@ -93,6 +95,7 @@ const categoryReports = async (req, res) => {
     res.status(error.code).json({ message: error.message });
   }
 };
+
 const itemsCategoryReports = async (req, res) => {
   try {
     const { month, year, operation, category } = req.body;
@@ -109,7 +112,7 @@ const itemsCategoryReports = async (req, res) => {
     res.status(error.code).json({ message: error.message });
   }
 };
-
+// Receive transactions by transactions
 const getTransactions = async (req, res, next) => {
   try {
     const { id } = req.user;
@@ -120,8 +123,8 @@ const getTransactions = async (req, res, next) => {
     res.status(error.code).json({ message: error.message });
   }
 };
-
-const deleteAllTransactionsAndBalance = async (req, res, _) => {
+// Discount transactions and balance
+const reset = async (req, res, _) => {
   try {
     const { id } = req.user;
     const info = await deleteServiceAllTransactions(id);
@@ -136,8 +139,8 @@ const deleteAllTransactionsAndBalance = async (req, res, _) => {
     res.status(error.code).json({ message: error.message });
   }
 };
-
-const deleteAllTransactionsByOperation = async (req, res, _) => {
+// Clear transactions on transactions
+const clearByOperation = async (req, res, _) => {
   try {
     const { operation } = req.body;
     const { id } = req.user;
@@ -157,6 +160,7 @@ const deleteAllTransactionsByOperation = async (req, res, _) => {
     res.status(error.code).json({ message: error.message });
   }
 };
+// Getting information on a transaction based on <operation, month, year, category>
 const infoAllTransaction = async (req, res, _) => {
   try {
     const { operation, month, year, category } = req.body;
@@ -178,7 +182,7 @@ module.exports = {
   categoryReports,
   itemsCategoryReports,
   getTransactions,
-  deleteAllTransactionsAndBalance,
-  deleteAllTransactionsByOperation,
+  reset,
+  clearByOperation,
   infoAllTransaction,
 };
