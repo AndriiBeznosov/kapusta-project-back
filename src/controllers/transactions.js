@@ -9,6 +9,7 @@ const {
   transactionDelete,
   deleteServiceAllTransactions,
   deleteServiceAllTransactionsByOperation,
+  infoTransaction,
 } = require('../services/transactions');
 
 const {
@@ -66,7 +67,7 @@ const summaryByMonth = async (req, res) => {
     const { operation } = req.body;
     const { id } = req.user;
     const transaction = await getSummary(id, operation);
-    res.status(201).json(transaction);
+    res.status(200).json(transaction);
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
@@ -77,7 +78,7 @@ const allSummaryReports = async (req, res) => {
     const { month, year } = req.body;
     const { id } = req.user;
     const transaction = await getAllSummaryReports(id, month, year);
-    res.status(201).json(transaction);
+    res.status(200).json(transaction);
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
@@ -87,7 +88,7 @@ const categoryReports = async (req, res) => {
     const { month, year, operation } = req.body;
     const { id } = req.user;
     const transaction = await getCategoryReports(id, month, year, operation);
-    res.status(201).json(transaction);
+    res.status(200).json(transaction);
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
@@ -103,7 +104,7 @@ const itemsCategoryReports = async (req, res) => {
       operation,
       category
     );
-    res.status(201).json(transaction);
+    res.status(200).json(transaction);
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
@@ -114,7 +115,7 @@ const getTransactions = async (req, res, next) => {
     const { id } = req.user;
     const { operation } = req.body;
     const information = await getAllTransactionsByOperation(id, operation);
-    res.status(201).json(information);
+    res.status(200).json(information);
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
@@ -156,6 +157,18 @@ const deleteAllTransactionsByOperation = async (req, res, _) => {
     res.status(error.code).json({ message: error.message });
   }
 };
+const infoAllTransaction = async (req, res, _) => {
+  try {
+    const { operation, month, year, category } = req.body;
+    const { id } = req.user;
+
+    const data = await infoTransaction(id, operation, month, year, category);
+
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(error.code).json({ message: error.message });
+  }
+};
 
 module.exports = {
   newTransaction,
@@ -167,4 +180,5 @@ module.exports = {
   getTransactions,
   deleteAllTransactionsAndBalance,
   deleteAllTransactionsByOperation,
+  infoAllTransaction,
 };
