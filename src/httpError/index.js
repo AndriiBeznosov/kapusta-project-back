@@ -9,5 +9,3 @@ class HttpError extends Error {
 module.exports = {
   HttpError,
 };
-
-// throw new HttpError("Not found", 404);
