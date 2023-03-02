@@ -63,7 +63,7 @@ userTransaction.post(
 
 userTransaction.delete('/delete-all', auth, tryCatchWrapper(reset));
 
-userTransaction.delete(
+userTransaction.put(
   '/delete-all-operation',
   auth,
   validateTransaction(operationSchema),
