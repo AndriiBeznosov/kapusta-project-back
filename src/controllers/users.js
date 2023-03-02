@@ -11,6 +11,10 @@ const {
   getPassword,
 } = require('../services/users');
 const { visitUser } = require('../services/visitUser');
+const {
+  checkAndCreateBlacklist,
+  addTokenToBlackList,
+} = require('../services/blackListServices');
 
 const register = async (req, res, _) => {
   try {
@@ -31,17 +35,21 @@ const register = async (req, res, _) => {
 const login = async (req, res, _) => {
   try {
     const { email: userEmail, password } = req.body;
-    const user = await loginUser(userEmail, password);
-    return res.json(user);
+    const { userId, userWithTokens } = await loginUser(userEmail, password);
+
+    await checkAndCreateBlacklist(userId);
+
+    return res.json(userWithTokens);
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
 };
 const logout = async (req, res, _) => {
-  const { id } = req.user;
+  const { id, accessToken } = req.user;
 
   try {
     await logoutUser(id);
+    await addTokenToBlackList(id, accessToken);
     return res.status(201).json({ message: 'The exit was successful' });
   } catch (error) {
     res.status(error.code).json({ message: error.message });
