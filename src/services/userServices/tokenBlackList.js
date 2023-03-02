@@ -34,13 +34,13 @@ const checkInBlackList = async (userId, accessToken) => {
 
 const checkAndCreateBlacklist = async userId => {
   try {
-    const blackList = await BlackList.findOne({ userId });
-
+    const blackList = await BlackList.findOne({ _id: userId });
+    console.log('blackList------', blackList);
     if (!blackList) {
       await BlackList.create({ userId });
     }
   } catch (error) {
-    return error;
+    throw new HttpError(error.message, error.code);
   }
 };
 

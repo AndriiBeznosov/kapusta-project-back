@@ -26,9 +26,9 @@ const register = async (req, res, _) => {
         .status(404)
         .json('password should be at least 6 characters long');
     }
-    const { user, message } = await addUser(email, password);
+    const { userId, message } = await addUser(email, password);
 
-    await createBlackListDocument(user._id);
+    await createBlackListDocument(userId);
 
     return res.status(201).json({ message });
   } catch (error) {

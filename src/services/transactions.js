@@ -196,6 +196,30 @@ const deleteServiceAllTransactionsByOperation = async (id, operation) => {
   }
 };
 
+const infoTransaction = async (id, operation, month, year, category) => {
+  try {
+    const data1 = await getItemsCategoryReports(
+      id,
+      month,
+      year,
+      operation,
+      category
+    );
+    const data2 = await getAllSummaryReports(id, month, year);
+    const data3 = await getCategoryReports(id, month, year, operation);
+
+    return [
+      {
+        itemsCategoryReports: data1,
+        allSummaryReports: data2,
+        categoryReports: data3,
+      },
+    ];
+  } catch (error) {
+    throw new HttpError(error.message, 404);
+  }
+};
+
 module.exports = {
   getSummary,
   getAllSummaryReports,
@@ -206,4 +230,5 @@ module.exports = {
   transactionDelete,
   deleteServiceAllTransactions,
   deleteServiceAllTransactionsByOperation,
+  infoTransaction,
 };

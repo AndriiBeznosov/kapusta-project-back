@@ -5,7 +5,6 @@ const tryCatchWrapper = endpointFn => {
     try {
       await endpointFn(req, res, next);
     } catch (error) {
-      // res.status(error.code).json({ message: error.message });
       throw new HttpError(error.code, error.message);
     }
   };

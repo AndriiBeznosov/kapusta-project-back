@@ -9,6 +9,7 @@ const {
   transactionDelete,
   deleteServiceAllTransactions,
   deleteServiceAllTransactionsByOperation,
+  infoTransaction,
 } = require('../services/transactions');
 
 const {
@@ -18,6 +19,7 @@ const {
   updateUserBalanceAfterAllDeleteTransactionsByOperation,
 } = require('../services/transactionServices/updateUserBalance');
 
+// Adding a new transaction
 const newTransaction = async (req, res, _) => {
   try {
     const transaction = await addTransaction(req.body, req.user._id);
@@ -38,7 +40,7 @@ const newTransaction = async (req, res, _) => {
     res.status(error.code).json({ message: error.message });
   }
 };
-
+// Deleting a transaction by id
 const deleteTransaction = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -60,13 +62,13 @@ const deleteTransaction = async (req, res, next) => {
     res.status(error.code).json({ message: error.message });
   }
 };
-
+//  Get the sum of the transaction by income, expenses
 const summaryByMonth = async (req, res) => {
   try {
     const { operation } = req.body;
     const { id } = req.user;
     const transaction = await getSummary(id, operation);
-    res.status(201).json(transaction);
+    res.status(200).json(transaction);
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
@@ -77,21 +79,23 @@ const allSummaryReports = async (req, res) => {
     const { month, year } = req.body;
     const { id } = req.user;
     const transaction = await getAllSummaryReports(id, month, year);
-    res.status(201).json(transaction);
+    res.status(200).json(transaction);
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
 };
+
 const categoryReports = async (req, res) => {
   try {
     const { month, year, operation } = req.body;
     const { id } = req.user;
     const transaction = await getCategoryReports(id, month, year, operation);
-    res.status(201).json(transaction);
+    res.status(200).json(transaction);
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
 };
+
 const itemsCategoryReports = async (req, res) => {
   try {
     const { month, year, operation, category } = req.body;
@@ -103,24 +107,24 @@ const itemsCategoryReports = async (req, res) => {
       operation,
       category
     );
-    res.status(201).json(transaction);
+    res.status(200).json(transaction);
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
 };
-
+// Receive transactions by transactions
 const getTransactions = async (req, res, next) => {
   try {
     const { id } = req.user;
     const { operation } = req.body;
     const information = await getAllTransactionsByOperation(id, operation);
-    res.status(201).json(information);
+    res.status(200).json(information);
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
 };
-
-const deleteAllTransactionsAndBalance = async (req, res, _) => {
+// Discount transactions and balance
+const reset = async (req, res, _) => {
   try {
     const { id } = req.user;
     const info = await deleteServiceAllTransactions(id);
@@ -135,8 +139,8 @@ const deleteAllTransactionsAndBalance = async (req, res, _) => {
     res.status(error.code).json({ message: error.message });
   }
 };
-
-const deleteAllTransactionsByOperation = async (req, res, _) => {
+// Clear transactions on transactions
+const clearByOperation = async (req, res, _) => {
   try {
     const { operation } = req.body;
     const { id } = req.user;
@@ -156,6 +160,19 @@ const deleteAllTransactionsByOperation = async (req, res, _) => {
     res.status(error.code).json({ message: error.message });
   }
 };
+// Getting information on a transaction based on <operation, month, year, category>
+const infoAllTransaction = async (req, res, _) => {
+  try {
+    const { operation, month, year, category } = req.body;
+    const { id } = req.user;
+
+    const data = await infoTransaction(id, operation, month, year, category);
+
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(error.code).json({ message: error.message });
+  }
+};
 
 module.exports = {
   newTransaction,
@@ -165,6 +182,7 @@ module.exports = {
   categoryReports,
   itemsCategoryReports,
   getTransactions,
-  deleteAllTransactionsAndBalance,
-  deleteAllTransactionsByOperation,
+  reset,
+  clearByOperation,
+  infoAllTransaction,
 };

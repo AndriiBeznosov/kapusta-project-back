@@ -5,7 +5,6 @@ const { REFRESH_SECRET } = process.env;
 
 const { HttpError } = require('../httpError');
 const { User } = require('../schemas/users');
-
 const { tokensCreator } = require('../services/tokensCreator');
 const {
   createVerificationToken,
@@ -45,7 +44,7 @@ const addUser = async (email, password) => {
     await sendMailConfirmationMail(user);
 
     return {
-      user,
+      userId: user._id,
       message: `User registration was successful, a verification email ${user.email} was sent to you`,
     };
   } catch (error) {
@@ -59,18 +58,18 @@ const loginUser = async (email, password) => {
     const user = await User.findOne({ email: emailCheck });
 
     if (!user) {
-      throw new HttpError('Invalid email address or password', 401);
+      throw new HttpError('Invalid email address or password', 400);
     }
 
     const isValidPass = await bcryptjs.compare(password, user.password);
 
     if (!isValidPass) {
-      throw new HttpError('Invalid email address or password', 401);
+      throw new HttpError('Invalid email address or password', 400);
     }
 
     if (!user.verify) {
       await sendMailConfirmationMail(user);
-      throw new HttpError(`Please confirm the mail ${email}`, 401);
+      throw new HttpError(`Please confirm the mail ${email}`, 400);
     }
 
     const { accessToken, refreshToken } = tokensCreator(user._id);
@@ -145,12 +144,14 @@ const verifyUserEmail = async verificationToken => {
 
 const getUser = async id => {
   try {
+    console.log('getUser---', id);
     const user = await User.findById(id, '-password -createdAt -updatedAt');
     if (!user.accessToken) {
       throw new HttpError('Invalid email address or password', 401);
     }
     return user;
   } catch (error) {
+    console.log(error.message, error.code);
     throw new HttpError(error.message, error.code);
   }
 };
