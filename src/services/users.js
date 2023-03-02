@@ -73,7 +73,7 @@ const loginUser = async (email, password) => {
 
     const { accessToken, refreshToken } = tokensCreator(user._id);
 
-    const updatedUser = await User.findByIdAndUpdate(
+    const userWithTokens = await User.findByIdAndUpdate(
       user._id,
       { accessToken, refreshToken },
       {
@@ -82,7 +82,7 @@ const loginUser = async (email, password) => {
       }
     );
 
-    return updatedUser;
+    return { userId: user._id, userWithTokens };
   } catch (error) {
     if (error.message.includes('Not valid email')) {
       throw new HttpError(error.message, error.code);
