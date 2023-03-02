@@ -144,14 +144,12 @@ const verifyUserEmail = async verificationToken => {
 
 const getUser = async id => {
   try {
-    console.log('getUser---', id);
     const user = await User.findById(id, '-password -createdAt -updatedAt');
     if (!user.accessToken) {
       throw new HttpError('Invalid email address or password', 401);
     }
     return user;
   } catch (error) {
-    console.log(error.message, error.code);
     throw new HttpError(error.message, error.code);
   }
 };
