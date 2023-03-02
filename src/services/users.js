@@ -44,6 +44,7 @@ const addUser = async (email, password) => {
     await sendMailConfirmationMail(user);
 
     return {
+      userId: user._id,
       message: `User registration was successful, a verification email ${user.email} was sent to you`,
     };
   } catch (error) {
@@ -73,7 +74,7 @@ const loginUser = async (email, password) => {
 
     const { accessToken, refreshToken } = tokensCreator(user._id);
 
-    const updatedUser = await User.findByIdAndUpdate(
+    const userWithTokens = await User.findByIdAndUpdate(
       user._id,
       { accessToken, refreshToken },
       {
@@ -82,7 +83,7 @@ const loginUser = async (email, password) => {
       }
     );
 
-    return updatedUser;
+    return { userWithTokens, userId: user._id };
   } catch (error) {
     if (error.message.includes('Not valid email')) {
       throw new HttpError(error.message, error.code);

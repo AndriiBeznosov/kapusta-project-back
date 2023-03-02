@@ -4,6 +4,7 @@ const { HttpError } = require('../httpError');
 const { ACCESS_SECRET } = process.env;
 
 const { User } = require('../schemas/users');
+const { checkInBlackList } = require('../services/userServices/tokenBlackList');
 
 const auth = async (req, res, next) => {
   const { authorization = '' } = req.headers;
@@ -11,14 +12,20 @@ const auth = async (req, res, next) => {
 
   try {
     if (typeAuth !== 'Bearer') {
-      return next(new HttpError('Invalid type of authorization', 401));
+      throw new HttpError('Invalid type of authorization', 401);
     }
 
     const { id } = jwt.verify(accessToken, ACCESS_SECRET);
     const user = await User.findById(id);
 
+    const isTokenInBlackList = await checkInBlackList(id, accessToken);
+
     if (!user || !user.accessToken) {
-      return next(new HttpError('Not authorized', 401));
+      throw new HttpError('Not authorized', 401);
+    }
+
+    if (isTokenInBlackList) {
+      throw new HttpError('Not authorized', 401);
     }
 
     req.user = user;

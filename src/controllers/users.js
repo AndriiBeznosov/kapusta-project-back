@@ -11,6 +11,11 @@ const {
   getPassword,
 } = require('../services/users');
 const { visitUser } = require('../services/visitUser');
+const {
+  createBlackListDocument,
+  addTokenToBlackList,
+  checkAndCreateBlacklist,
+} = require('../services/userServices/tokenBlackList');
 
 const register = async (req, res, _) => {
   try {
@@ -21,8 +26,11 @@ const register = async (req, res, _) => {
         .status(404)
         .json('password should be at least 6 characters long');
     }
-    const user = await addUser(email, password);
-    return res.status(201).json(user);
+    const { userId, message } = await addUser(email, password);
+
+    await createBlackListDocument(userId);
+
+    return res.status(201).json({ message });
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
@@ -31,18 +39,24 @@ const register = async (req, res, _) => {
 const login = async (req, res, _) => {
   try {
     const { email: userEmail, password } = req.body;
-    const user = await loginUser(userEmail, password);
-    return res.json(user);
+    const { userId, userWithTokens } = await loginUser(userEmail, password);
+
+    await checkAndCreateBlacklist(userId);
+
+    return res.json(userWithTokens);
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
 };
 const logout = async (req, res, _) => {
-  const { id } = req.user;
+  const { id, accessToken } = req.user;
 
   try {
     await logoutUser(id);
-    return res.status(201).json({ message: 'The exit was successful' });
+
+    await addTokenToBlackList(id, accessToken);
+
+    return res.status(200).json({ message: 'The exit was successful' });
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
@@ -82,7 +96,7 @@ const getMe = async (req, res, _) => {
   const { id } = req.user;
   try {
     const userInfo = await getUser(id);
-    return res.status(201).json(userInfo);
+    return res.status(200).json(userInfo);
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
