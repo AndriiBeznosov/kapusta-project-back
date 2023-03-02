@@ -4,16 +4,13 @@ const jwt = require('jsonwebtoken');
 const { ACCESS_SECRET } = process.env;
 
 const { User } = require('../schemas/users');
-const {
-  checkTokenInBlackList,
-} = require('../services/userServices/tokenBlackList');
+const { checkInBlackList } = require('../services/userServices/tokenBlackList');
 
 const auth = async (req, res, next) => {
   const { authorization = '' } = req.headers;
   const [typeAuth, accessToken] = authorization.split(' ');
 
   if (typeAuth !== 'Bearer') {
-    // throw new HttpError('Not authorized', 401);
     return res.status(401).json({
       message: 'Invalid type of authorization',
     });
@@ -24,10 +21,9 @@ const auth = async (req, res, next) => {
 
     const user = await User.findById(id);
 
-    const { isTokenInBlackList } = await checkTokenInBlackList(id, accessToken);
+    const isTokenInBlackList = await checkInBlackList(id, accessToken);
 
     if (!user || !user.accessToken || isTokenInBlackList) {
-      // throw new HttpError('Not authorized', 401);
       return res.status(401).json({
         message: 'Not authorized',
       });
@@ -40,7 +36,6 @@ const auth = async (req, res, next) => {
     console.log('From auth middleware ERROR: ', error);
 
     if (error.name === 'TokenExpiredError') {
-      // return next(new HttpError(error.name, 401));
       res.status(401).json({ massage: 'jwt expired' });
     }
 

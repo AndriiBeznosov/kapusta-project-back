@@ -14,6 +14,7 @@ const { visitUser } = require('../services/visitUser');
 const {
   createBlackListDocument,
   addTokenToBlackList,
+  checkAndCreateBlacklist,
 } = require('../services/userServices/tokenBlackList');
 
 const register = async (req, res, _) => {
@@ -25,11 +26,11 @@ const register = async (req, res, _) => {
         .status(404)
         .json('password should be at least 6 characters long');
     }
-    const user = await addUser(email, password);
+    const { user, message } = await addUser(email, password);
 
     await createBlackListDocument(user._id);
 
-    return res.status(201).json(user);
+    return res.status(201).json({ message });
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }
@@ -38,8 +39,11 @@ const register = async (req, res, _) => {
 const login = async (req, res, _) => {
   try {
     const { email: userEmail, password } = req.body;
-    const user = await loginUser(userEmail, password);
-    return res.json(user);
+    const { userId, userWithTokens } = await loginUser(userEmail, password);
+
+    await checkAndCreateBlacklist(userId);
+
+    return res.json(userWithTokens);
   } catch (error) {
     res.status(error.code).json({ message: error.message });
   }

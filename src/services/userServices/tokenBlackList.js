@@ -21,19 +21,32 @@ const addTokenToBlackList = async (userId, accessToken) => {
   }
 };
 
-const checkTokenInBlackList = async (userId, accessToken) => {
+const checkInBlackList = async (userId, accessToken) => {
   try {
     const { blackList } = await BlackList.findOne({ userId });
     const isExists = blackList.includes(accessToken);
 
-    return { isExists };
+    return isExists;
   } catch (error) {
     throw new HttpError(error.message, error.code);
+  }
+};
+
+const checkAndCreateBlacklist = async userId => {
+  try {
+    const blackList = await BlackList.findOne({ userId });
+
+    if (!blackList) {
+      await BlackList.create({ userId });
+    }
+  } catch (error) {
+    return error;
   }
 };
 
 module.exports = {
   createBlackListDocument,
   addTokenToBlackList,
-  checkTokenInBlackList,
+  checkInBlackList,
+  checkAndCreateBlacklist,
 };
