@@ -47,6 +47,7 @@ const googleRedirect = async (req, res) => {
     email,
     verified_email: verifiedGoogleEmail,
     picture: avatarUrl,
+    given_name: userName,
   } = userData;
 
   let user = await User.findOne({ email });
@@ -63,6 +64,7 @@ const googleRedirect = async (req, res) => {
       verify: verifiedGoogleEmail,
       verificationToken: 'null',
       avatarUrl,
+      userName,
     });
 
     const mail = createLoginInfoMail(email, createdPassword);
