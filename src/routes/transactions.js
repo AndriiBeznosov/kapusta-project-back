@@ -10,6 +10,7 @@ const {
   reset,
   infoAllTransaction,
   clearByOperation,
+  allReportsTransactions,
 } = require('../controllers/transactions');
 const { tryCatchWrapper } = require('../tryCatchWrapper/tryCatchWrapper');
 const { auth } = require('../middlewares/auth');
@@ -75,6 +76,12 @@ userTransaction.post(
   auth,
   validateTransaction(infoTransactionSchema),
   tryCatchWrapper(infoAllTransaction)
+);
+userTransaction.post(
+  '/all-reports',
+  auth,
+  validateTransaction(infoTransactionSchema),
+  tryCatchWrapper(allReportsTransactions)
 );
 
 module.exports = userTransaction;
