@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongodb');
 const { HttpError } = require('../httpError');
 const { Transaction } = require('../schemas/transactions');
 
@@ -220,6 +221,144 @@ const infoTransaction = async (id, operation, month, year, category) => {
   }
 };
 
+const getAllReports = async (id, month, year) => {
+  try {
+    const reports = [
+      {
+        $facet: {
+          allSummaryReports: [
+            {
+              $match: {
+                userId: new ObjectId(id),
+                month,
+                year,
+              },
+            },
+            {
+              $group: {
+                _id: '$operation',
+                sum: { $sum: '$sum' },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                operation: '$_id',
+                sum: 1,
+              },
+            },
+          ],
+          categoryReports: [
+            {
+              $match: {
+                userId: new ObjectId(id),
+                month,
+                year,
+              },
+            },
+            {
+              $group: {
+                _id: '$operation',
+                transactions: {
+                  $push: {
+                    category: '$category',
+                    sum: { $sum: '$sum' },
+                  },
+                },
+              },
+            },
+            { $unwind: '$transactions' },
+            {
+              $group: {
+                _id: {
+                  operation: '$_id',
+                  category: '$transactions.category',
+                },
+                sum: { $sum: '$transactions.sum' },
+                simple: { $sum: 1 },
+              },
+            },
+            {
+              $group: {
+                _id: '$_id.operation',
+                category: {
+                  $push: {
+                    category: '$_id.category',
+                    sum: '$sum',
+                  },
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                operation: '$_id',
+                category: 1,
+              },
+            },
+          ],
+          itemsCategoryReports: [
+            {
+              $match: {
+                userId: new ObjectId(id),
+                month,
+                year,
+              },
+            },
+            {
+              $group: {
+                _id: '$operation',
+                transactions: {
+                  $push: {
+                    category: '$category',
+                    description: '$description',
+                    sum: { $sum: '$sum' },
+                  },
+                },
+              },
+            },
+            { $unwind: '$transactions' },
+            {
+              $group: {
+                _id: {
+                  operation: '$_id',
+                  category: '$transactions.category',
+                  description: '$transactions.description',
+                },
+                sum: { $sum: '$transactions.sum' },
+              },
+            },
+            {
+              $group: {
+                _id: '$_id.operation',
+                description: {
+                  $push: {
+                    category: '$_id.category',
+                    description: '$_id.description',
+                    sum: '$sum',
+                  },
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                operation: '$_id',
+                description: 1,
+              },
+            },
+          ],
+        },
+      },
+    ];
+
+    const result = await Transaction.aggregate(reports);
+    return result;
+  } catch (error) {
+    throw new HttpError(error.message, 404);
+  }
+};
+
 module.exports = {
   getSummary,
   getAllSummaryReports,
@@ -231,4 +370,5 @@ module.exports = {
   deleteServiceAllTransactions,
   deleteServiceAllTransactionsByOperation,
   infoTransaction,
+  getAllReports,
 };
