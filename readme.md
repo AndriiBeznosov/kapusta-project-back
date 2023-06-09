@@ -7,7 +7,7 @@
 Потрібно передати, приклад: { "email":"andreyservis2332@ukr.net",
 "password":"123456" }
 
-- `https://kapusta-project-back-production.up.railway.app/api/users/register`
+- `https://kapusta-project-back.onrender.com/api/users/register`
 
 Відповідь: {message: "User registration was successful, a verification email
 and@and.com was sent to you"}
@@ -25,7 +25,7 @@ refreshToken Його краще обробити й записати в localSt
 
 Вхід в систему через email та password (login)
 
-- `https://kapusta-project-back-production.up.railway.app/api/users/login`
+- `https://kapusta-project-back.onrender.com/api/users/login`
 
 Відповідь, коли верифікацію пройдено : { "\_id": "63f22620ab2035b9989fbbc4",
 "password": "$2a$10$iwFZRZGOng2Z1MFu7FAYBOfuVj9/Oexuge2ZlEiaixZPp7OqwtFiu",
@@ -39,13 +39,13 @@ refreshToken Його краще обробити й записати в localSt
 Карточці User записуються нові дані <accessToken: null> та <refreshToken: null>
 Також потрібно видалити токен в localStorage
 
-- `https://kapusta-project-back-production.up.railway.app/api/users/logout`
+- `https://kapusta-project-back.onrender.com/api/users/logout`
 
 ## PATCH Зміна балансу
 
 Потрібно передати: { "balance":200000 }
 
-- `https://kapusta-project-back-production.up.railway.app/api/users/balance`
+- `https://kapusta-project-back.onrender.com/api/users/balance`
 
   Відповідь успішної транзакції: { "balance":200000, "firstBalance: true" }
 
@@ -54,7 +54,7 @@ refreshToken Його краще обробити й записати в localSt
   Потрібно зробити запит, відповідь прийде якщо токен записаний в
   config.headers.Authorization
 
-  - `https://kapusta-project-back-production.up.railway.app/api/users/get-user`
+  - `https://kapusta-project-back.onrender.com/api/users/get-user`
 
   Відповідь: { "accessToken": ".......","refreshToken":"....", "\_id":
   "63f647e7ecd31043a14be05a", "email": "andrey301288@gmail.com", "userName":
@@ -72,22 +72,21 @@ refreshToken Його краще обробити й записати в localSt
 <config.headers.Authorization>
 
 - const instance = axios.create({ baseURL:
-  'https://kapusta-project-back-production.up.railway.app', });
+  'https://kapusta-project-back.onrender.com', });
 
 міделвер для додавання токена якщо користувач ввійшов в систему
 
 - instance.interceptors.request.use((config) => { config.headers.Authorization =
   window.localStorage.getItem("token"); return config; });
 
-- `https://kapusta-project-back-production.up.railway.app/api/users/verify/:verificationToken`
+- `https://kapusta-project-back.onrender.com/api/users/verify/:verificationToken`
 
 коли проходите верифікацію, створюється пара токенів й передається в параметрах
 як refreshToken та accessToken
 
 ## POST Завантаження фото
 
-Потрібно передати image
-`https://kapusta-project-back-production.up.railway.app/upload`
+Потрібно передати image `https://kapusta-project-back.onrender.com/upload`
 
 - Відповідь: { "url": "/uploads/IMG_6976.png" }
 
@@ -95,7 +94,7 @@ refreshToken Його краще обробити й записати в localSt
 
 Можна оновити: {userName:...., avatarUrl:......, password: .....}
 
-- `https://kapusta-project-back-production.up.railway.app/api/users/update-user`
+- `https://kapusta-project-back.onrender.com/api/users/update-user`
 
 Відповідь: Карточка User
 
@@ -103,7 +102,7 @@ refreshToken Його краще обробити й записати в localSt
 
 Потрібно передати: {email: .......}
 
-- `https://kapusta-project-back-production.up.railway.app/api/users/refresh-password`
+- `https://kapusta-project-back.onrender.com/api/users/refresh-password`
 
 Відповідь:
 
@@ -119,7 +118,7 @@ refreshToken Його краще обробити й записати в localSt
 
 Користувач на початку першого входу: {firstVisit: false}
 
-- `https://kapusta-project-back-production.up.railway.app/api/users/first-visit`
+- `https://kapusta-project-back.onrender.com/api/users/first-visit`
 
 Відправляєте запит на бек Змінює статус користувача на {firstVisit: true}, але
 відповідь йде зі старим статусом. Якщо користувач вже {firstVisit: true} то
@@ -130,7 +129,7 @@ refreshToken Його краще обробити й записати в localSt
 
 Потрібно передати: {password : .......}
 
-- `https://kapusta-project-back-production.up.railway.app/api/users/password-verification`
+- `https://kapusta-project-back.onrender.com/api/users/password-verification`
 
 Відповідь: {status: <true або false>}
 
@@ -141,7 +140,7 @@ refreshToken Його краще обробити й записати в localSt
 Потрібно передати вид транзакціям {operation: "income"} або {operation:
 "expenses"}
 
-- `https://kapusta-project-back-production.up.railway.app/api/transaction/operation`
+- `https://kapusta-project-back.onrender.com/api/transaction/operation`
 
 Відповідь: [{},{},{}]
 
@@ -151,7 +150,7 @@ refreshToken Його краще обробити й записати в localSt
 "date": "17.02.2023", "month": "February", "year":"2023", "category":"Other",
 "sum":"5000", "currency":"UAH" }"
 
-- `https://kapusta-project-back-production.up.railway.app/api/transaction/new`
+- `https://kapusta-project-back.onrender.com/api/transaction/new`
 
 Відповідь: { "data": { "operation": "expenses", "description": "Купівля поні 2",
 "category": "Other", "sum": 32000, "date": "01.03.2023", "month": "March",
@@ -163,7 +162,7 @@ refreshToken Його краще обробити й записати в localSt
 
 Потрібно передати id транзакції
 
-- `https://kapusta-project-back-production.up.railway.app/api/transaction/delete/${< id-транзакції>}`
+- `https://kapusta-project-back.onrender.com/api/transaction/delete/${< id-транзакції>}`
 
 Автоматично змінюється баланс в користувача й записується в карточку
 
@@ -175,7 +174,7 @@ refreshToken Його краще обробити й записати в localSt
 потрібно передати вид транзакціям {operation: "income"} або {operation:
 "expenses"}
 
-- `https://kapusta-project-back-production.up.railway.app/api/transaction/summary`
+- `https://kapusta-project-back.onrender.com/api/transaction/summary`
 
 Відповідь:
 
@@ -185,7 +184,7 @@ refreshToken Його краще обробити й записати в localSt
 
 Потрібно передати: { month, year, operation }
 
-- `https://kapusta-project-back-production.up.railway.app/api/transaction/all-summary-reports`
+- `https://kapusta-project-back.onrender.com/api/transaction/all-summary-reports`
 
 Відповідь: [ { "operation": "expenses", "sum": 96000 }, { "operation": "income",
 "sum": 96000 } ]
@@ -194,7 +193,7 @@ refreshToken Його краще обробити й записати в localSt
 
 Потрібно передати: { month, year, operation }
 
-- `https://kapusta-project-back-production.up.railway.app/api/transaction/category-reports`
+- `https://kapusta-project-back.onrender.com/api/transaction/category-reports`
 
 Відповідь: [ { "category": "Other", "sum": 96000 } ]
 
@@ -202,6 +201,6 @@ refreshToken Його краще обробити й записати в localSt
 
 Потрібно передати: { month, year, operation, category }
 
-- `https://kapusta-project-back-production.up.railway.app/api/transaction/items-category-reports`
+- `https://kapusta-project-back.onrender.com/api/transaction/items-category-reports`
 
 Відповідь: [ { "category": "Other", "sum": 96000 } ]

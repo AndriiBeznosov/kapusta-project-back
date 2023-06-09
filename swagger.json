@@ -15,7 +15,7 @@
     {
       "url": "http://localhost:4444/api"
     },
-    { "url": "https://kapusta-project-back-production.up.railway.app/api" },
+    { "url": "https://kapusta-project-back.onrender.com/api" },
     { "url": "https://eimanager.netlify.app/api/" }
   ],
   "tags": [
@@ -437,7 +437,7 @@
         "x-code-samples": [
           {
             "lang": "Shell",
-            "source": "curl -X GET 'https://kapusta-project-back-production.up.railway.app/auth/google-redirection' -H 'accept: application/json'"
+            "source": "curl -X GET 'https://kapusta-project-back.onrender.com/auth/google-redirection' -H 'accept: application/json'"
           }
         ]
       }
@@ -461,7 +461,7 @@
         "x-code-samples": [
           {
             "lang": "Shell",
-            "source": "curl -X GET 'https://kapusta-project-back-production.up.railway.app/auth/google-redirection' -H 'accept: application/json'"
+            "source": "curl -X GET 'https://kapusta-project-back.onrender.com/auth/google-redirection' -H 'accept: application/json'"
           }
         ]
       }
